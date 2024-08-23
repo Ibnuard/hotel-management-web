@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-type TJumlahTamuProps = {
-  type: 'user' | 'admin';
+type TProps = {
   value: string;
   setValue: (val: string) => void;
 };
 
-const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
-  type,
-  value,
-  setValue,
-}) => {
+const SelectTipeKamar: React.FC<TProps> = ({ value, setValue }) => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
   const changeTextColor = () => {
@@ -21,7 +16,7 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
   return (
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
-        {type == 'user' ? 'Jumlah Tamu Dewasa' : 'Maksimal Jumlah Tamu Dewasa'}
+        Tipe Kamar
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -36,7 +31,7 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Tamu dewasa
+            Tipe Kamar
           </option>
           <option value="1" className="text-body dark:text-bodydark">
             1 Orang
@@ -63,4 +58,4 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
   );
 };
 
-export default SelectJumlahTamuDewasa;
+export default SelectTipeKamar;

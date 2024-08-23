@@ -12,7 +12,7 @@ import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import FileModal from '../../components/Modals/FileModal';
 
-const CheckInForm = () => {
+const KamarDetails = () => {
   const location = useLocation();
 
   // parameter
@@ -66,14 +66,12 @@ const CheckInForm = () => {
                 <div className="flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuDewasa
-                      type={'user'}
                       value={jmlTamuDewasa}
                       setValue={setJmlTamuDewasa}
                     />
                   </div>
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuAnak
-                      type={'user'}
                       value={jmlTamuAnak}
                       setValue={setJmlTamuAnak}
                     />
@@ -325,4 +323,4 @@ const CheckInForm = () => {
   );
 };
 
-export default CheckInForm;
+export default KamarDetails;

@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-type TJumlahTamuProps = {
-  type: 'user' | 'admin';
+type TProps = {
   value: string;
   setValue: (val: string) => void;
 };
 
-const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
-  type,
-  value,
-  setValue,
-}) => {
+const SelectKetersediaan: React.FC<TProps> = ({ value, setValue }) => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
   const changeTextColor = () => {
@@ -21,7 +16,7 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
   return (
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
-        {type == 'user' ? 'Jumlah Tamu Dewasa' : 'Maksimal Jumlah Tamu Dewasa'}
+        Ketersediaan Kamar
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -36,22 +31,13 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Tamu dewasa
+            Ketersediaan Kamar
           </option>
           <option value="1" className="text-body dark:text-bodydark">
-            1 Orang
+            Tersedia
           </option>
           <option value="2" className="text-body dark:text-bodydark">
-            2 Orang
-          </option>
-          <option value="3" className="text-body dark:text-bodydark">
-            3 Orang
-          </option>
-          <option value="4" className="text-body dark:text-bodydark">
-            4 Orang
-          </option>
-          <option value="5" className="text-body dark:text-bodydark">
-            5 Orang
+            Tidak Tersedia
           </option>
         </select>
 
@@ -63,4 +49,4 @@ const SelectJumlahTamuDewasa: React.FC<TJumlahTamuProps> = ({
   );
 };
 
-export default SelectJumlahTamuDewasa;
+export default SelectKetersediaan;

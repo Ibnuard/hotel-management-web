@@ -7,15 +7,20 @@ import {
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
-import DefaultLayout from '../layout/DefaultLayout';
 import Loader from '../common/Loader';
 
+// Screen CheckIn
 const InHouse = lazy(() => import('../pages/Dashboard/InHouse'));
 const CheckInSelectKamar = lazy(
   () => import('../pages/Dashboard/CheckInSelectKamar'),
 );
 const CheckInForm = lazy(() => import('../pages/Dashboard/CheckInForm'));
 const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
+
+// Screen Admin
+const Kamar = lazy(() => import('../pages/Admin/Kamar'));
+const KamarDetails = lazy(() => import('../pages/Admin/KamarDetails'));
+const KamarInput = lazy(() => import('../pages/Admin/KamarInput'));
 
 const Routes = () => {
   const { token } = useAuth();
@@ -33,7 +38,7 @@ const Routes = () => {
     element: ReactElement;
   };
 
-  const routesForAuthenticated: routesTypes[] = [
+  const routesCheckin: routesTypes[] = [
     {
       path: '/',
       element: <ProtectedRoute />,
@@ -73,6 +78,46 @@ const Routes = () => {
     },
   ];
 
+  const routesAdmin: routesTypes[] = [
+    {
+      path: '/',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/admin/kamar',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Kamar')} />
+              <Kamar />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/kamar/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Kamar')} />
+              <KamarDetails />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/kamar/input',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Kamar')} />
+              <KamarInput />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
   const routesForUnAuth: routesTypes[] = [
     {
       path: '/login',
@@ -87,7 +132,8 @@ const Routes = () => {
 
   const router = createBrowserRouter([
     ...(!token ? routesForUnAuth : []),
-    ...routesForAuthenticated,
+    ...routesCheckin,
+    ...routesAdmin,
   ]);
 
   return <RouterProvider router={router} />;

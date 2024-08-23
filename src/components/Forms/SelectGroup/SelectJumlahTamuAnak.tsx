@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 type TJumlahTamuProps = {
+  type: 'user' | 'admin';
   value: string;
   setValue: (val: string) => void;
 };
 
 const SelectJumlahTamuAnak: React.FC<TJumlahTamuProps> = ({
+  type = 'user',
   value,
   setValue,
 }) => {
@@ -19,7 +21,9 @@ const SelectJumlahTamuAnak: React.FC<TJumlahTamuProps> = ({
   return (
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
-        Jumlah Tamu Anak - Anak
+        {type == 'user'
+          ? 'Jumlah Tamu Anak - Anak'
+          : 'Maksimal Jumlah Tamu Anak - Anak'}
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
