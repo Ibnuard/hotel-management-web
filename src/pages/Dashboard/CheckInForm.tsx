@@ -9,6 +9,8 @@ import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import TimePicker from '../../components/Forms/DatePicker/TimePicker';
 import { Button, Chip, Typography } from '@material-tailwind/react';
 import { formatDate } from '../../utils/DateUtils';
+import { formatCurrency } from '../../utils/Utility';
+import FileModal from '../../components/Modals/FileModal';
 
 const CheckInForm = () => {
   const location = useLocation();
@@ -21,6 +23,7 @@ const CheckInForm = () => {
 
   // modal state
   const [tamuVisible, setTamuVisible] = useState(false);
+  const [fileVisible, setFileVisible] = useState(false);
 
   // data state
   const [tamu, setTamu] = useState<any>();
@@ -30,10 +33,16 @@ const CheckInForm = () => {
   const [waktuCI, setWaktuCI] = useState<any>();
   const [tanggalCO, setTanggalCO] = useState<any>();
   const [waktuCO, setWaktuCO] = useState<any>();
+  const [deposit, setDeposit] = useState<string>('');
+
+  const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setDeposit(formatCurrency(inputValue));
+  };
 
   return (
     <>
-      <Breadcrumb pageName="Form Pemesanan" />
+      <Breadcrumb pageName="Form Pemesanan Kamar" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
@@ -76,6 +85,8 @@ const CheckInForm = () => {
                   <input
                     type="text"
                     placeholder="Masukan jumlah deposit"
+                    value={deposit}
+                    onChange={handleDepositChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
@@ -171,25 +182,24 @@ const CheckInForm = () => {
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Nama Alias
-                  </label>
-                  <input
-                    defaultValue={'-'}
-                    disabled
-                    type="text"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
                     Identitas
                   </label>
-                  <input
-                    defaultValue={'KTP | 1234567890'}
-                    disabled
-                    type="text"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
+                  <div className=" flex flex-row gap-x-4">
+                    <input
+                      defaultValue={'KTP | 1234567890'}
+                      disabled
+                      type="text"
+                      className=" w-2/3 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                    <Button
+                      className=" w-1/3 normal-case"
+                      color={'blue'}
+                      variant="outlined"
+                      onClick={() => setFileVisible(!fileVisible)}
+                    >
+                      Lihat Foto
+                    </Button>
+                  </div>
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
@@ -207,6 +217,43 @@ const CheckInForm = () => {
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Email
+                    </label>
+                    <input
+                      defaultValue={'apa@test.com'}
+                      disabled
+                      type="text"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className=" mb-4.5">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Alamat
+                  </label>
+                  <textarea
+                    rows={2}
+                    disabled
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  ></textarea>
+                </div>
+
+                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                  <div className="w-full xl:w-1/2">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Kabupaten / Kota
+                    </label>
+                    <input
+                      defaultValue={'085'}
+                      disabled
+                      type="text"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="w-full xl:w-1/2">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Provinsi
                     </label>
                     <input
                       defaultValue={'apa@test.com'}
@@ -263,6 +310,14 @@ const CheckInForm = () => {
         visible={tamuVisible}
         toggle={() => setTamuVisible(!tamuVisible)}
         value={(val: string) => setTamu(val)}
+      />
+
+      <FileModal
+        visible={fileVisible}
+        toggle={() => setFileVisible(!fileVisible)}
+        data={
+          'https://assets.pikiran-rakyat.com/crop/0x813:1022x1460/x/photo/2021/02/16/1553449315.jpg'
+        }
       />
     </>
   );
