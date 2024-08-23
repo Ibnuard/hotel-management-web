@@ -1,24 +1,47 @@
 import { Button, Typography } from '@material-tailwind/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import useFetch from '../../hooks/useFetch';
+import { LOGIN } from '../../api/routes';
+import { API_STATES } from '../../common/Constants';
 
 const SignIn: React.FC = () => {
-  const { token, setToken } = useAuth();
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  function onLogin() {
-    setToken('ABCD');
+  const { setToken, setUser } = useAuth();
+
+  async function onLogin() {
+    const body = {
+      userid: userId,
+      password: password,
+    };
+
+    const { state, data, error } = await useFetch({
+      url: LOGIN,
+      method: 'POST',
+      data: body,
+    });
+
+    if (state === API_STATES.ERROR) {
+      setErrorMessage(error || 'Login failed. Please try again.');
+    } else {
+      setUser(data);
+      setToken(data.userId);
+    }
+
+    console.log(state, data, error);
   }
-
-  console.log('TOKENS', token);
 
   return (
     <>
-      <div className=" xl:grid xl:place-items-center h-full sm:h-[100dvh] rounded-sm border border-stroke bg-white shadow-default dark:border-strokedar">
+      <div className="xl:grid xl:place-items-center h-full sm:h-[100dvh] rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark">
         <div>
-          <div className=" grid min-h-screen w-full place-items-center">
+          <div className="grid min-h-screen w-full place-items-center">
             <div>
               <div className="grid place-items-center p-4 mb-4.5">
-                <div className=" mb-8">
+                <div className="mb-8">
                   <img
                     className="block h-40 w-40 object-contain"
                     src={`https://cdn-icons-png.flaticon.com/512/5084/5084259.png`}
@@ -39,6 +62,8 @@ const SignIn: React.FC = () => {
                         type="text"
                         placeholder="Masukan User ID"
                         className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-4 pr-6 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
                       />
                     </div>
                   </div>
@@ -48,9 +73,11 @@ const SignIn: React.FC = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type={'password'}
+                        type="password"
                         placeholder="Masukan Password"
                         className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-4 pr-6 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
                   </div>
@@ -59,13 +86,20 @@ const SignIn: React.FC = () => {
                   <Button
                     fullWidth
                     color={'blue'}
-                    className=" mt-8 normal-case"
+                    className="mt-8 normal-case"
                     onClick={onLogin}
                   >
                     Login
                   </Button>
                 </div>
               </div>
+
+              {/* Centered error message */}
+              {errorMessage && (
+                <span className="mt-4 flex justify-center text-red-500">
+                  {errorMessage}
+                </span>
+              )}
             </div>
           </div>
         </div>

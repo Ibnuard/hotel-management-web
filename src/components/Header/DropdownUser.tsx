@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { setUser, setToken } = useAuth();
+  const { setUser, setToken, user } = useAuth();
 
   function onLogout(e: any) {
     e.preventDefault();
@@ -22,13 +22,18 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {user.nama}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">ADMIN</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img
+            src={
+              'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png'
+            }
+            alt="User"
+          />
         </span>
 
         <ChevronDownIcon className=" size-6" />
