@@ -1,23 +1,41 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useState } from 'react';
 import { Button } from '@material-tailwind/react';
-import { formatCurrency } from '../../utils/Utility';
 import SelectTipeKamar from '../../components/Forms/SelectGroup/SelectTipeKamar';
 import SelectJumlahTamuDewasa from '../../components/Forms/SelectGroup/SelectJumlahTamuDewasa';
 import SelectJumlahTamuAnak from '../../components/Forms/SelectGroup/SelectJumlahTamuAnak';
 import SelectKetersediaan from '../../components/Forms/SelectGroup/SelectKetersediaan';
+import useFetch from '../../hooks/useFetch';
+import { ADD_KAMAR } from '../../api/routes';
+import { API_STATES } from '../../common/Constants';
 
 const KamarInput = () => {
-  const [deposit, setDeposit] = useState<string>('');
+  const [namaKamar, setNamaKamar] = useState('');
+  const [nomorKamar, setNomorKamar] = useState('');
   const [tipeKamar, setTipeKamar] = useState<string>('');
   const [maxDewasa, setMaxDewasa] = useState('');
   const [maxAnak, setMaxAnak] = useState('');
   const [ketersediaan, setKetersediaan] = useState('');
 
-  const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setDeposit(formatCurrency(inputValue));
-  };
+  async function onAddKamar() {
+    const body = {
+      nama_kamar: namaKamar,
+      nomor_kamar: nomorKamar,
+      tipe_kamar_id: tipeKamar,
+      max_dewasa: maxDewasa,
+      max_anak: maxAnak,
+      is_tersedia: ketersediaan,
+    };
+    const { state, data, error } = await useFetch({
+      url: ADD_KAMAR,
+      method: 'POST',
+      data: body,
+    });
+
+    if (state == API_STATES.OK) {
+      alert('OK');
+    }
+  }
 
   return (
     <>
@@ -41,8 +59,8 @@ const KamarInput = () => {
                   <input
                     type="text"
                     placeholder="Masukan nama kamar"
-                    value={deposit}
-                    onChange={handleDepositChange}
+                    value={namaKamar}
+                    onChange={(e) => setNamaKamar(e.target.value)}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
@@ -54,8 +72,8 @@ const KamarInput = () => {
                   <input
                     type="text"
                     placeholder="Masukan nomor kamar"
-                    value={deposit}
-                    onChange={handleDepositChange}
+                    value={nomorKamar}
+                    onChange={(e) => setNomorKamar(e.target.value)}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
@@ -83,7 +101,12 @@ const KamarInput = () => {
                   value={ketersediaan}
                   setValue={setKetersediaan}
                 />
-                <Button color={'blue'} fullWidth className=" mt-8 normal-case">
+                <Button
+                  onClick={onAddKamar}
+                  color={'blue'}
+                  fullWidth
+                  className=" mt-8 normal-case"
+                >
                   Simpan
                 </Button>
               </div>
