@@ -316,7 +316,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
         </nav>
-        {/* <!-- Sidebar Menu --> */}
       </div>
     </aside>
   );
