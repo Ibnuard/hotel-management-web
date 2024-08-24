@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import useFetch from '../../../hooks/useFetch';
+import { GET_ALL_TIPE_KAMAR } from '../../../api/routes';
+import { API_STATES } from '../../../common/Constants';
 
 type TProps = {
   value: string;
@@ -8,10 +11,28 @@ type TProps = {
 
 const SelectTipeKamar: React.FC<TProps> = ({ value, setValue }) => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
+  const [list, setList] = useState([]);
 
   const changeTextColor = () => {
     setIsOptionSelected(true);
   };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  async function getList() {
+    const { state, data, error } = await useFetch({
+      url: GET_ALL_TIPE_KAMAR(1, 100, ''),
+      method: 'GET',
+    });
+
+    if (state == API_STATES.OK) {
+      setList(data.data);
+    } else {
+      setList(data);
+    }
+  }
 
   return (
     <div className="mb-4.5">
@@ -33,21 +54,13 @@ const SelectTipeKamar: React.FC<TProps> = ({ value, setValue }) => {
           <option value="" disabled className="text-body dark:text-bodydark">
             Tipe Kamar
           </option>
-          <option value="1" className="text-body dark:text-bodydark">
-            1 Orang
-          </option>
-          <option value="2" className="text-body dark:text-bodydark">
-            2 Orang
-          </option>
-          <option value="3" className="text-body dark:text-bodydark">
-            3 Orang
-          </option>
-          <option value="4" className="text-body dark:text-bodydark">
-            4 Orang
-          </option>
-          <option value="5" className="text-body dark:text-bodydark">
-            5 Orang
-          </option>
+          {list?.map((item: any, index: number) => {
+            return (
+              <option value={item.id} className="text-body dark:text-bodydark">
+                {item.tipe}
+              </option>
+            );
+          })}
         </select>
 
         <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">

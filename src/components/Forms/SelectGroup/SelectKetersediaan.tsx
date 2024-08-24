@@ -33,10 +33,10 @@ const SelectKetersediaan: React.FC<TProps> = ({ value, setValue }) => {
           <option value="" disabled className="text-body dark:text-bodydark">
             Ketersediaan Kamar
           </option>
-          <option value="1" className="text-body dark:text-bodydark">
+          <option value={1} className="text-body dark:text-bodydark">
             Tersedia
           </option>
-          <option value="2" className="text-body dark:text-bodydark">
+          <option value={0} className="text-body dark:text-bodydark">
             Tidak Tersedia
           </option>
         </select>

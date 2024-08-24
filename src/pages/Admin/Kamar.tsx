@@ -140,7 +140,19 @@ const Kamar = () => {
               <tbody>
                 {kamarList.map(
                   (
-                    { id, nama_kamar, nomor_kamar, tipe_kamar, is_tersedia },
+                    {
+                      id,
+                      nama_kamar,
+                      nomor_kamar,
+                      tipeKamar,
+                      is_tersedia,
+                    }: {
+                      id: number;
+                      nama_kamar: string;
+                      nomor_kamar: number;
+                      tipeKamar: any;
+                      is_tersedia: number;
+                    },
                     index,
                   ) => {
                     const isLast = index === kamarList.length - 1;
@@ -178,7 +190,7 @@ const Kamar = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {tipe_kamar}
+                            {tipeKamar?.tipe}
                           </Typography>
                         </td>
                         <td className={classes}>
@@ -188,11 +200,9 @@ const Kamar = () => {
                               size="sm"
                               className=" normal-case"
                               value={
-                                is_tersedia == '1'
-                                  ? 'Tersedia'
-                                  : 'Tidak tersedia'
+                                is_tersedia == 1 ? 'Tersedia' : 'Tidak tersedia'
                               }
-                              color={is_tersedia == '1' ? 'green' : 'red'}
+                              color={is_tersedia == 1 ? 'green' : 'red'}
                             />
                           </div>
                         </td>

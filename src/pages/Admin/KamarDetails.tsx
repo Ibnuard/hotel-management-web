@@ -40,12 +40,14 @@ const KamarDetails = () => {
     if (id) {
       setNamaKamar(stateParams.nama_kamar);
       setNomorKamar(stateParams.nomor_kamar);
-      setTipeKamar(stateParams.tipe_kamar);
+      setTipeKamar(stateParams.tipe_kamar_id);
       setMaxDewasa(stateParams.max_dewasa);
       setMaxAnak(stateParams.max_anak);
       setKetersediaan(stateParams.is_tersedia);
     }
   }, [id]);
+
+  console.log('tipe', tipeKamar);
 
   async function onEditKamar() {
     setType(MODAL_TYPE.LOADING);
