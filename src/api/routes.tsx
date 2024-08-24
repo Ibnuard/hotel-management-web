@@ -9,6 +9,7 @@ export const EDIT_KAMAR = (id: any) => `admin/edit-kamar/${id}`;
 export const GET_ALL_KAMAR = (page = 1, limit = 10, cari = '') =>
   `admin/kamar?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_KAMAR = (id: any) => `admin/kamar/${id}`;
+export const GET_KAMAR_STATS = 'admin/kamar/stats';
 
 // TAMU
 export const ADD_TAMU = 'admin/add-tamu';
@@ -28,7 +29,11 @@ export const DELETE_TIPE_KAMAR = (id: any) => `admin/tipe/${id}`;
 export const GET_READY_KAMAR = (page = 1, limit = 100, cari = '') =>
   `checkin/kamar?page=${page}&limit=${limit}&cari=${cari}`;
 export const CREATE_CHECKIN = 'checkin/create';
+export const UPDATE_CHECKIN = (id: number) => `checkin/update/${id}`;
+export const DELETE_CHECKIN = (id: number, kamarId: number) =>
+  `checkin/delete/${id}?kamarId=${kamarId}`;
 
 // CHECKOUT
 export const GET_CHECKOUT_KAMAR = (page = 1, limit = 100, cari = '') =>
   `checkout/kamar?page=${page}&limit=${limit}&cari=${cari}`;
+export const GET_CHECKOUT_KAMAR_DETAIL = (id: number) => `checkout/kamar/${id}`;

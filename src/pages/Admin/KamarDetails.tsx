@@ -10,6 +10,7 @@ import { ADD_KAMAR, DELETE_KAMAR, EDIT_KAMAR } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { formatCurrency } from '../../utils/Utility';
 
 const KamarDetails = () => {
   const [namaKamar, setNamaKamar] = useState('');
@@ -18,6 +19,7 @@ const KamarDetails = () => {
   const [maxDewasa, setMaxDewasa] = useState('');
   const [maxAnak, setMaxAnak] = useState('');
   const [ketersediaan, setKetersediaan] = useState('');
+  const [harga, setHarga] = useState('');
 
   // modal
   const { toggle, setType, setOnConfirm } = useModal();
@@ -34,7 +36,13 @@ const KamarDetails = () => {
     !tipeKamar ||
     !maxDewasa ||
     !maxAnak ||
-    !ketersediaan;
+    !ketersediaan ||
+    !harga;
+
+  const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setHarga(formatCurrency(inputValue));
+  };
 
   useEffect(() => {
     if (id) {
@@ -156,6 +164,19 @@ const KamarDetails = () => {
                       setValue={setMaxAnak}
                     />
                   </div>
+                </div>
+
+                <div className="mb-9">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Harga per malam ( Rp )
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Masukan harga / malam"
+                    value={harga}
+                    onChange={handleHargaChange}
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
                 </div>
 
                 <SelectKetersediaan

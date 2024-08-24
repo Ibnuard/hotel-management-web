@@ -43,6 +43,9 @@ const SelectJumlahTamuAnak: React.FC<TJumlahTamuProps> = ({
           <option value="" disabled className="text-body dark:text-bodydark">
             Tamu anak - anak
           </option>
+          <option value={0} className="text-body dark:text-bodydark">
+            Tidak ada
+          </option>
           <option value={1} className="text-body dark:text-bodydark">
             1 Orang
           </option>

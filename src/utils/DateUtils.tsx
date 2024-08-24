@@ -15,3 +15,15 @@ export const formatDate = (
   // Use moment to parse and format the date
   return moment(date).format(dateFormat);
 };
+
+export function isStartDateAfterEndDate(
+  startDate: string | Date,
+  endDate: string | Date,
+) {
+  // Parse the dates using moment
+  const start = moment(startDate, 'YYYY-MM-DD');
+  const end = moment(endDate, 'YYYY-MM-DD');
+
+  // Check if startDate is after endDate
+  return start.isAfter(end);
+}

@@ -8,7 +8,7 @@ import SelectJumlahTamuAnak from '../../components/Forms/SelectGroup/SelectJumla
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import TimePicker from '../../components/Forms/DatePicker/TimePicker';
 import { Button, Chip, Typography } from '@material-tailwind/react';
-import { formatDate } from '../../utils/DateUtils';
+import { formatDate, isStartDateAfterEndDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
@@ -56,6 +56,13 @@ const CheckInForm = () => {
   }, []);
 
   async function onCheckIn() {
+    const validateDate = isStartDateAfterEndDate(tanggalCI, tanggalCO);
+    if (validateDate) {
+      toggle();
+      alert('Tanggal Check Out harus lebih dari tanggal Check In.');
+      return;
+    }
+
     setType(MODAL_TYPE.LOADING);
 
     const body = {

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import TamuModal from '../../components/Modals/TamuModal';
 import { useEffect, useState } from 'react';
 import InputModal from '../../components/Forms/InputModal';
 import SelectJumlahTamuDewasa from '../../components/Forms/SelectGroup/SelectJumlahTamuDewasa';
@@ -7,14 +8,19 @@ import SelectJumlahTamuAnak from '../../components/Forms/SelectGroup/SelectJumla
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import TimePicker from '../../components/Forms/DatePicker/TimePicker';
 import { Button, Chip, Typography } from '@material-tailwind/react';
+import { formatDate, isStartDateAfterEndDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
-import { CREATE_CHECKIN, GET_CHECKOUT_KAMAR_DETAIL } from '../../api/routes';
+import {
+  CREATE_CHECKIN,
+  DELETE_CHECKIN,
+  GET_CHECKOUT_KAMAR_DETAIL,
+  UPDATE_CHECKIN,
+} from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
-import InvoiceModal from '../../components/Modals/InvoiceModal';
 
-const CheckOutForm = () => {
+const CheckInEdit = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -28,7 +34,6 @@ const CheckOutForm = () => {
 
   // modal state
   const [tamuVisible, setTamuVisible] = useState(false);
-  const [invoiceVisible, setInvoiceVisible] = useState(false);
 
   // data state
   const [tamu, setTamu] = useState<any>(TAMU_DATA);
@@ -74,20 +79,55 @@ const CheckOutForm = () => {
     }
   }
 
-  console.log('Detail', orderDetail);
+  async function onUpdateCheckIn() {
+    const validateDate = isStartDateAfterEndDate(tanggalCI, tanggalCO);
+    if (validateDate) {
+      toggle();
+      alert('Tanggal Check Out harus lebih dari tanggal Check In.');
+      return;
+    }
 
-  async function onCheckOut() {
     setType(MODAL_TYPE.LOADING);
 
+    const body = {
+      jumlah_dewasa: jmlTamuDewasa,
+      jumlah_anak: jmlTamuAnak,
+      jumlah_deposit: deposit,
+      tgl_checkout: tanggalCO,
+      waktu_checkout: waktuCO,
+    };
     const { state, data, error } = await useFetch({
-      url: GET_CHECKOUT_KAMAR_DETAIL(stateParameter?.id),
+      url: UPDATE_CHECKIN(stateParameter.id),
       method: 'POST',
+      data: body,
     });
 
     if (state == API_STATES.OK) {
       setType(MODAL_TYPE.SUCCESS);
       setOnConfirm(() => {
-        navigate('/order/checkout');
+        navigate('/');
+        toggle();
+      });
+    } else {
+      setType(MODAL_TYPE.ERROR);
+      setOnConfirm(() => {
+        toggle();
+      });
+    }
+  }
+
+  async function onDeleteCheckIn() {
+    setType(MODAL_TYPE.LOADING);
+
+    const { state, data, error } = await useFetch({
+      url: DELETE_CHECKIN(stateParameter.id, KAMAR_DATA.id),
+      method: 'DELETE',
+    });
+
+    if (state == API_STATES.OK) {
+      setType(MODAL_TYPE.SUCCESS);
+      setOnConfirm(() => {
+        navigate('/');
         toggle();
       });
     } else {
@@ -120,7 +160,7 @@ const CheckOutForm = () => {
                   placeholder="Pilih Tamu"
                   value={
                     tamu
-                      ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang} ( ${tamu.alias} )`
+                      ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang}`
                       : ''
                   }
                   onClick={() => setTamuVisible(!tamuVisible)}
@@ -130,7 +170,6 @@ const CheckOutForm = () => {
                 <div className="flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuDewasa
-                      disabled
                       type={'user'}
                       value={jmlTamuDewasa}
                       setValue={setJmlTamuDewasa}
@@ -138,7 +177,6 @@ const CheckOutForm = () => {
                   </div>
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuAnak
-                      disabled
                       type={'user'}
                       value={jmlTamuAnak}
                       setValue={setJmlTamuAnak}
@@ -151,7 +189,6 @@ const CheckOutForm = () => {
                     Jumlah Deposit ( Rp )
                   </label>
                   <input
-                    disabled
                     type="text"
                     placeholder="Masukan jumlah deposit"
                     value={deposit}
@@ -202,7 +239,6 @@ const CheckOutForm = () => {
                     <div className="flex flex-col gap-6 xl:flex-row mb-4.5">
                       <div className="w-full xl:w-1/2">
                         <DatePicker
-                          disabled
                           selector="checkout-date"
                           title="Tanggal Check Out"
                           value={tanggalCO}
@@ -211,7 +247,6 @@ const CheckOutForm = () => {
                       </div>
                       <div className="w-full xl:w-1/2">
                         <TimePicker
-                          disabled
                           selector="checkout-time"
                           title="Waktu Check Out"
                           value={waktuCO}
@@ -221,12 +256,159 @@ const CheckOutForm = () => {
                     </div>
                   </div>
                 </div>
+                <div className=" flex flex-row gap-x-4">
+                  <Button
+                    onClick={() => {
+                      setType(MODAL_TYPE.CONFIRMATION);
+                      setOnConfirm(() => onUpdateCheckIn());
+                      toggle();
+                    }}
+                    color={'blue'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Update Data Check In
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setType(MODAL_TYPE.CONFIRMATION);
+                      setOnConfirm(() => onDeleteCheckIn());
+                      toggle();
+                    }}
+                    color={'red'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Hapus Data Check In
+                  </Button>
+                </div>
+                <Button
+                  onClick={() => navigate('/')}
+                  variant={'outlined'}
+                  color={'red'}
+                  fullWidth
+                  className=" mt-4 normal-case"
+                >
+                  Batalkan
+                </Button>
               </div>
             </form>
           </div>
         </div>
 
         <div className="flex flex-col gap-9">
+          {/* <!-- Sign In Form --> */}
+          {tamu && (
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  Detail Tamu
+                </h3>
+              </div>
+              <form action="#">
+                <div className="p-6.5">
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Nama
+                    </label>
+                    <input
+                      value={
+                        tamu
+                          ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang} ( ${tamu.alias} )`
+                          : ''
+                      }
+                      disabled
+                      type="text"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Identitas
+                    </label>
+                    <div className=" flex flex-row gap-x-4">
+                      <input
+                        value={tamu ? tamu.tipe_identitas : ''}
+                        disabled
+                        type="text"
+                        className=" w-1/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                      <input
+                        value={tamu ? tamu.nomor_identitas : ''}
+                        disabled
+                        type="text"
+                        className=" w-4/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="w-full xl:w-1/2">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        No. Telpon
+                      </label>
+                      <input
+                        value={tamu ? tamu.no_telp : ''}
+                        disabled
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+
+                    <div className="w-full xl:w-1/2">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Email
+                      </label>
+                      <input
+                        value={tamu ? tamu.email : ''}
+                        disabled
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+                  </div>
+
+                  <div className=" mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Alamat
+                    </label>
+                    <textarea
+                      value={tamu ? tamu.alamat : ''}
+                      rows={2}
+                      disabled
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    ></textarea>
+                  </div>
+
+                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="w-full xl:w-1/2">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Kabupaten / Kota
+                      </label>
+                      <input
+                        value={tamu ? tamu.kabupaten : ''}
+                        disabled
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+
+                    <div className="w-full xl:w-1/2">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Provinsi
+                      </label>
+                      <input
+                        value={tamu ? tamu.provinsi : ''}
+                        disabled
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* <!-- Sign In Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -260,109 +442,30 @@ const CheckOutForm = () => {
 
                 <div>
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Keterangan Layanan / Produk
+                    Ketentuan
                   </label>
-                  <div className=" flex flex-col gap-y-2">
-                    <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>Harga</Typography>
-                      <Typography color={'black'} variant={'small'}>
-                        {formatCurrency(String(orderDetail?.harga))}
-                      </Typography>
-                    </div>
-                    <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>Qty</Typography>
-                      <Typography color={'black'} variant={'small'}>
-                        {orderDetail?.qty} Malam
-                      </Typography>
-                    </div>
-                    <div className=" flex flex-row justify-between mb-2">
-                      <Typography
-                        className=" font-semibold text-boxdark-2"
-                        variant={'small'}
-                      >
-                        Sub-Total
-                      </Typography>
-                      <Typography
-                        color={'black'}
-                        className=" font-semibold"
-                        variant={'small'}
-                      >
-                        {formatCurrency(String(orderDetail?.subtotal))}
-                      </Typography>
-                    </div>
-                    <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>PPn 11%</Typography>
-                      <Typography color={'black'} variant={'small'}>
-                        {formatCurrency(String(orderDetail?.ppn))}
-                      </Typography>
-                    </div>
-                    <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>Jumlah Deposit</Typography>
-                      <Typography color={'black'} variant={'small'}>
-                        {formatCurrency(String(orderDetail?.deposit))}
-                      </Typography>
-                    </div>
-                    <div className=" flex flex-row justify-between">
-                      <Typography
-                        color={'black'}
-                        className=" font-semibold text-boxdark-2"
-                        variant={'small'}
-                      >
-                        Grand Total
-                      </Typography>
-                      <Typography
-                        color={'black'}
-                        className=" font-semibold"
-                        variant={'small'}
-                      >
-                        {formatCurrency(String(orderDetail?.grandTotal))}
-                      </Typography>
-                    </div>
+                  <div className=" flex flex-col gap-y-1">
+                    <Typography variant={'small'}>
+                      Maksimal Orang Dewasa: {KAMAR_DATA?.max_dewasa} Orang
+                    </Typography>
+                    <Typography variant={'small'}>
+                      Maksimal Anak - anak : {KAMAR_DATA?.max_anak} Orang
+                    </Typography>
                   </div>
                 </div>
-                <div className=" flex flex-row gap-x-4">
-                  <Button
-                    onClick={() => {
-                      setType(MODAL_TYPE.CONFIRMATION);
-                      setOnConfirm(() => onCheckOut());
-                      toggle();
-                    }}
-                    color={'blue'}
-                    fullWidth
-                    className=" mt-8 normal-case"
-                  >
-                    Check Out
-                  </Button>
-                  <Button
-                    onClick={() => setInvoiceVisible(!invoiceVisible)}
-                    color={'deep-orange'}
-                    fullWidth
-                    className=" mt-8 normal-case"
-                  >
-                    Cetak Invoice
-                  </Button>
-                </div>
-                <Button
-                  onClick={() => navigate('/order/checkout')}
-                  variant={'outlined'}
-                  color={'red'}
-                  fullWidth
-                  className=" mt-4 normal-case"
-                >
-                  Batalkan
-                </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <InvoiceModal
-        visible={invoiceVisible}
-        toggle={setInvoiceVisible}
-        data={stateParameter}
+
+      <TamuModal
+        visible={tamuVisible}
+        toggle={() => setTamuVisible(!tamuVisible)}
+        value={(val: string) => setTamu(val)}
       />
     </>
   );
 };
 
-export default CheckOutForm;
+export default CheckInEdit;

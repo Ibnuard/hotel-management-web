@@ -18,6 +18,7 @@ const CheckInSelectKamar = lazy(
   () => import('../pages/Dashboard/CheckInSelectKamar'),
 );
 const CheckInForm = lazy(() => import('../pages/Dashboard/CheckInForm'));
+const CheckInEdit = lazy(() => import('../pages/Dashboard/CheckInEdit'));
 
 // Screen CheckIn
 const CheckOutSelectKamar = lazy(
@@ -85,6 +86,15 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Check In')} />
               <CheckInForm />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/checkin/edit',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Edit Check In')} />
+              <CheckInEdit />
             </Suspense>
           ),
         },
