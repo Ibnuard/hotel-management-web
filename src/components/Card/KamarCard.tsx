@@ -25,9 +25,9 @@ export function KamarCard({
     <Card className="mt-6">
       <CardBody>
         <Typography variant="h5" color="blue-gray" className="mb-1">
-          Kamar Mawar
+          {stateData.nama_kamar} #{stateData.nomor_kamar}
         </Typography>
-        <Typography variant={'h6'}>Eksekutif</Typography>
+        <Typography variant={'h6'}>{stateData.tipe_kamar}</Typography>
       </CardBody>
       <CardFooter className="pt-0">
         <Button className=" normal-case" color={'blue'} onClick={onClicked}>

@@ -7,87 +7,10 @@ import {
   ListItem,
   Typography,
 } from '@material-tailwind/react';
-
-const SAMPLE_TAMU = [
-  {
-    nama: 'Mr. Iben',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-  {
-    nama: 'Mr. Bono',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-  {
-    nama: 'Mr. Juno',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-  {
-    nama: 'Mr. Iben',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-  {
-    nama: 'Mr. Bono',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-  {
-    nama: 'Mr. Juno',
-    alamat: {
-      kabupaten: 'cil',
-      provinsi: 'jaw',
-      jalan: 'maw',
-    },
-    ktp: '11212121212',
-    fotoktp: '121212',
-    region: 'indonesia',
-    nohp: '0857',
-    email: 'email@gmail.com',
-  },
-];
+import useFetch from '../../hooks/useFetch';
+import { GET_ALL_TAMU } from '../../api/routes';
+import { API_STATES } from '../../common/Constants';
+import { useNavigate } from 'react-router-dom';
 
 const TamuModal = ({
   visible,
@@ -106,23 +29,31 @@ const TamuModal = ({
   const [data, setData] = React.useState<any>([]);
   const [search, setSearch] = React.useState<string>('');
 
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     if (!data.length) {
-      getBankList();
+      getList();
     }
   }, [visible]);
 
-  async function getBankList() {
-    setData(SAMPLE_TAMU);
+  async function getList(key: string = '') {
+    const { state, data, error } = await useFetch({
+      url: GET_ALL_TAMU(1, 10, key),
+      method: 'GET',
+    });
+
+    if (state == API_STATES.OK) {
+      setData(data.data);
+    } else {
+      setData([]);
+    }
   }
 
-  function onFiltered(key: string) {
-    const filtered = data.filter(
-      (item: { nama: string; alamat: object; ktp: string }) => {
-        return item.nama.toLowerCase().includes(key.toLowerCase());
-      },
-    );
-    return filtered;
+  function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      getList(search);
+    }
   }
 
   function onSaveButtonPress(selected: any) {
@@ -147,23 +78,29 @@ const TamuModal = ({
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
           />
         </div>
         <List className=" max-h-90 overflow-y-auto">
-          {onFiltered(search) &&
-            onFiltered(search).map((item: any, index: number) => {
-              return (
-                <div onClick={() => onSaveButtonPress(item)}>
-                  <ListItem className=" text-black">{item?.nama}</ListItem>
-                </div>
-              );
-            })}
+          {data.map((item: any, index: number) => {
+            return (
+              <div onClick={() => onSaveButtonPress(item)}>
+                <ListItem className=" text-black">
+                  {item?.nama_depan} {item?.nama_belakang} ({item?.alias})
+                </ListItem>
+              </div>
+            );
+          })}
         </List>
         <Button
           color={'blue'}
           fullWidth
           className=" mt-4 normal-case"
           variant="outlined"
+          onClick={() => {
+            toggle();
+            navigate('/admin/tamu');
+          }}
         >
           + Tambahkan Tamu Baru
         </Button>

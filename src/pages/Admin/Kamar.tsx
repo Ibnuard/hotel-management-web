@@ -100,7 +100,7 @@ const Kamar = () => {
                   color={'blue'}
                   className="flex items-center gap-3 normal-case"
                   size="sm"
-                  onClick={() => navigate('/admin/tamu/input')}
+                  onClick={() => navigate('/admin/kamar/input')}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Tambah
                   Kamar Baru

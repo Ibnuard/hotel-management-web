@@ -33,6 +33,8 @@ const CheckInForm = () => {
   const [waktuCO, setWaktuCO] = useState<any>();
   const [deposit, setDeposit] = useState<string>('');
 
+  console.log('TAMU', tamu);
+
   const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setDeposit(formatCurrency(inputValue));
@@ -48,7 +50,8 @@ const CheckInForm = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Kamar Dipilih : {stateParameter?.id}
+                Kamar Dipilih : {stateParameter?.nama_kamar} #
+                {stateParameter?.nomor_kamar}
               </h3>
             </div>
             <form action="#">
@@ -56,9 +59,13 @@ const CheckInForm = () => {
                 <InputModal
                   title="Tamu"
                   placeholder="Pilih Tamu"
-                  value={tamu?.nama}
+                  value={
+                    tamu
+                      ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang}`
+                      : ''
+                  }
                   onClick={() => setTamuVisible(!tamuVisible)}
-                  onXClick={() => setTamu({})}
+                  onXClick={() => setTamu(null)}
                 />
 
                 <div className="flex flex-col gap-6 xl:flex-row">
@@ -174,7 +181,11 @@ const CheckInForm = () => {
                     Nama
                   </label>
                   <input
-                    defaultValue={'Robet Downey Jr.'}
+                    value={
+                      tamu
+                        ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang}`
+                        : ''
+                    }
                     disabled
                     type="text"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -186,13 +197,13 @@ const CheckInForm = () => {
                   </label>
                   <div className=" flex flex-row gap-x-4">
                     <input
-                      defaultValue={'KTP'}
+                      value={tamu ? tamu.tipe_identitas : ''}
                       disabled
                       type="text"
                       className=" w-1/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                     <input
-                      defaultValue={'1234567890'}
+                      value={tamu ? tamu.nomor_identitas : ''}
                       disabled
                       type="text"
                       className=" w-4/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -205,7 +216,7 @@ const CheckInForm = () => {
                       No. Telpon
                     </label>
                     <input
-                      defaultValue={'085'}
+                      value={tamu ? tamu.no_telp : ''}
                       disabled
                       type="text"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -217,7 +228,7 @@ const CheckInForm = () => {
                       Email
                     </label>
                     <input
-                      defaultValue={'apa@test.com'}
+                      value={tamu ? tamu.email : ''}
                       disabled
                       type="text"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -230,6 +241,7 @@ const CheckInForm = () => {
                     Alamat
                   </label>
                   <textarea
+                    value={tamu ? tamu.alamat : ''}
                     rows={2}
                     disabled
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -242,7 +254,7 @@ const CheckInForm = () => {
                       Kabupaten / Kota
                     </label>
                     <input
-                      defaultValue={'085'}
+                      value={tamu ? tamu.kabupaten : ''}
                       disabled
                       type="text"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -254,7 +266,7 @@ const CheckInForm = () => {
                       Provinsi
                     </label>
                     <input
-                      defaultValue={'apa@test.com'}
+                      value={tamu ? tamu.provinsi : ''}
                       disabled
                       type="text"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -274,13 +286,24 @@ const CheckInForm = () => {
             </div>
             <div>
               <div className="p-6.5">
+                <div className=" mb-4.5">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Kamar
+                  </label>
+                  <div className=" flex flex-col gap-y-1">
+                    <Typography variant={'small'}>
+                      {stateParameter.nama_kamar} #{stateParameter.nomor_kamar}
+                    </Typography>
+                  </div>
+                </div>
+
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
                     Tipe Kamar
                   </label>
                   <Chip
                     variant="ghost"
-                    value="KAMAR EKSEKUTIF"
+                    value={stateParameter?.tipe_kamar || 'Tipe Kamar'}
                     color={'blue'}
                   />
                 </div>
@@ -291,10 +314,10 @@ const CheckInForm = () => {
                   </label>
                   <div className=" flex flex-col gap-y-1">
                     <Typography variant={'small'}>
-                      Maksimal Orang Dewasa: 2 Orang
+                      Maksimal Orang Dewasa: {stateParameter?.max_dewasa} Orang
                     </Typography>
                     <Typography variant={'small'}>
-                      Maksimal Anak - anak : 2 Orang
+                      Maksimal Anak - anak : {stateParameter?.max_anak} Orang
                     </Typography>
                   </div>
                 </div>
