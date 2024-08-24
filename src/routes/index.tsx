@@ -27,6 +27,11 @@ const Tamu = lazy(() => import('../pages/Admin/Tamu'));
 const TamuInput = lazy(() => import('../pages/Admin/TamuInput'));
 const TamuDetails = lazy(() => import('../pages/Admin/TamuDetails'));
 
+// Tipe kamar
+const TipeKamar = lazy(() => import('../pages/Admin/TipeKamar'));
+const TipeKamarDetails = lazy(() => import('../pages/Admin/TipeKamarDetails'));
+const TipeKamarInput = lazy(() => import('../pages/Admin/TipeKamarInput'));
+
 const Routes = () => {
   const { token } = useAuth();
 
@@ -139,6 +144,33 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Manajemen Kamar')} />
               <TamuDetails />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/tipe-kamar',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Kamar')} />
+              <TipeKamar />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/tipe-kamar/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Kamar')} />
+              <TipeKamarDetails />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/tipe-kamar/input',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Tamu')} />
+              <TipeKamarInput />
             </Suspense>
           ),
         },

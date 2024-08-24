@@ -8,32 +8,24 @@ import {
   Typography,
   Button,
   CardBody,
-  Chip,
   CardFooter,
-  Avatar,
   IconButton,
   Tooltip,
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
-import { GET_ALL_KAMAR } from '../../api/routes';
+import { GET_ALL_TIPE_KAMAR } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
 
-const TABLE_HEAD = [
-  'Nama Kamar',
-  'Nomor Kamar',
-  'Tipe Kamar',
-  'Ketersediaan',
-  '',
-];
+const TABLE_HEAD = ['Tipe Kamar', ''];
 
-const Kamar = () => {
+const TipeKamar = () => {
   // state
   const [page, setPage] = useState(1);
   const [pageInfo, setPageInfo] = useState<any>();
-  const [kamarList, setKamarList] = useState([]);
+  const [list, setList] = useState([]);
   const [cari, setCari] = useState('');
 
   // navigation
@@ -43,45 +35,42 @@ const Kamar = () => {
   const { setType, toggle } = useModal();
 
   useEffect(() => {
-    getAllKamar();
+    getAllList();
   }, [page]);
 
-  async function getAllKamar() {
+  async function getAllList() {
     setType(MODAL_TYPE.LOADING);
     toggle();
 
     const { state, data, error } = await useFetch({
-      url: GET_ALL_KAMAR(page, 5, cari),
+      url: GET_ALL_TIPE_KAMAR(page, 5, cari),
       method: 'GET',
     });
 
     if (state == API_STATES.OK) {
       toggle();
-      setKamarList(data.data);
+      setList(data.data);
       setPageInfo(data.pagination);
     } else {
       toggle();
-      setKamarList([]);
-      setPageInfo(null);
+      setList([]);
     }
+  }
+
+  function onEditData(item: any) {
+    navigate(`/admin/tipe-kamar/${item.id}`, { state: item });
   }
 
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       setPage(1); // Reset to the first page on search
-      getAllKamar();
+      getAllList();
     }
-  }
-
-  function onEditKamar(item: any) {
-    console.log('kamar', item);
-
-    navigate(`/admin/kamar/${item.id}`, { state: item });
   }
 
   return (
     <>
-      <Breadcrumb pageName="Manajemen Kamar" />
+      <Breadcrumb pageName="Manajemen Tipe Kamar" />
 
       <div className="w-full">
         <Card className="h-full w-full">
@@ -89,10 +78,10 @@ const Kamar = () => {
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray">
-                  Daftar Kamar
+                  Daftar Tipe Kamar
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
-                  Melihat informasi semua kamar yang ada
+                  Melihat informasi semua tipe kamar yang ada
                 </Typography>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -100,16 +89,16 @@ const Kamar = () => {
                   color={'blue'}
                   className="flex items-center gap-3 normal-case"
                   size="sm"
-                  onClick={() => navigate('/admin/kamar/input')}
+                  onClick={() => navigate('/admin/tipe-kamar/input')}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Tambah
-                  Kamar Baru
+                  Tipe Kamar Baru
                 </Button>
               </div>
             </div>
             <div className="w-full md:w-72">
               <Input
-                label="Cari kamar"
+                label="Cari tipe kamar"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 value={cari}
                 onChange={(e) => setCari(e.target.value)}
@@ -138,78 +127,40 @@ const Kamar = () => {
                 </tr>
               </thead>
               <tbody>
-                {kamarList.map(
-                  (
-                    { id, nama_kamar, nomor_kamar, tipe_kamar, is_tersedia },
-                    index,
-                  ) => {
-                    const isLast = index === kamarList.length - 1;
-                    const classes = isLast
-                      ? 'p-4'
-                      : 'p-4 border-b border-blue-gray-50';
+                {list?.map(({ id, tipe }, index) => {
+                  const isLast = index === list.length - 1;
+                  const classes = isLast
+                    ? 'p-4'
+                    : 'p-4 border-b border-blue-gray-50';
 
-                    return (
-                      <tr key={id}>
-                        <td className={classes}>
-                          <div className="flex items-center gap-3">
-                            <div className="flex flex-col">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                              >
-                                {nama_kamar}
-                              </Typography>
-                            </div>
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {nomor_kamar}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {tipe_kamar}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          <div className="w-max">
-                            <Chip
-                              variant="ghost"
-                              size="sm"
-                              className=" normal-case"
-                              value={
-                                is_tersedia == '1'
-                                  ? 'Tersedia'
-                                  : 'Tidak tersedia'
-                              }
-                              color={is_tersedia == '1' ? 'green' : 'red'}
-                            />
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <Tooltip content="Edit">
-                            <IconButton
-                              variant="text"
-                              onClick={() => onEditKamar(kamarList[index])}
+                  return (
+                    <tr key={id}>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
                             >
-                              <PencilIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    );
-                  },
-                )}
+                              {tipe}
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Edit">
+                          <IconButton
+                            variant="text"
+                            onClick={() => onEditData(list[index])}
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </CardBody>
@@ -248,4 +199,4 @@ const Kamar = () => {
   );
 };
 
-export default Kamar;
+export default TipeKamar;
