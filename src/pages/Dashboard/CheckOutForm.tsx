@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import TamuModal from '../../components/Modals/TamuModal';
 import { useEffect, useState } from 'react';
 import InputModal from '../../components/Forms/InputModal';
 import SelectJumlahTamuDewasa from '../../components/Forms/SelectGroup/SelectJumlahTamuDewasa';
@@ -8,12 +7,12 @@ import SelectJumlahTamuAnak from '../../components/Forms/SelectGroup/SelectJumla
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import TimePicker from '../../components/Forms/DatePicker/TimePicker';
 import { Button, Chip, Typography } from '@material-tailwind/react';
-import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
 import { CREATE_CHECKIN } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
+import InvoiceModal from '../../components/Modals/InvoiceModal';
 
 const CheckOutForm = () => {
   const location = useLocation();
@@ -29,6 +28,7 @@ const CheckOutForm = () => {
 
   // modal state
   const [tamuVisible, setTamuVisible] = useState(false);
+  const [invoiceVisible, setInvoiceVisible] = useState(false);
 
   // data state
   const [tamu, setTamu] = useState<any>(TAMU_DATA);
@@ -322,11 +322,7 @@ const CheckOutForm = () => {
                     Check Out
                   </Button>
                   <Button
-                    onClick={() => {
-                      setType(MODAL_TYPE.CONFIRMATION);
-                      setOnConfirm(() => onCheckIn());
-                      toggle();
-                    }}
+                    onClick={() => setInvoiceVisible(!invoiceVisible)}
                     color={'deep-orange'}
                     fullWidth
                     className=" mt-8 normal-case"
@@ -339,7 +335,7 @@ const CheckOutForm = () => {
                   variant={'outlined'}
                   color={'red'}
                   fullWidth
-                  className=" mt-8 normal-case"
+                  className=" mt-4 normal-case"
                 >
                   Batalkan
                 </Button>
@@ -348,11 +344,10 @@ const CheckOutForm = () => {
           </div>
         </div>
       </div>
-
-      <TamuModal
-        visible={tamuVisible}
-        toggle={() => setTamuVisible(!tamuVisible)}
-        value={(val: string) => setTamu(val)}
+      <InvoiceModal
+        visible={invoiceVisible}
+        toggle={setInvoiceVisible}
+        data={stateParameter}
       />
     </>
   );

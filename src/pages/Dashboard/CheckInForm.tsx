@@ -208,18 +208,28 @@ const CheckInForm = () => {
                     </div>
                   </div>
                 </div>
-                <Button
-                  onClick={() => {
-                    setType(MODAL_TYPE.CONFIRMATION);
-                    setOnConfirm(() => onCheckIn());
-                    toggle();
-                  }}
-                  color={'blue'}
-                  fullWidth
-                  className=" mt-8 normal-case"
-                >
-                  Check In
-                </Button>
+                <div className=" flex flex-row gap-x-4">
+                  <Button
+                    onClick={() => {
+                      setType(MODAL_TYPE.CONFIRMATION);
+                      setOnConfirm(() => onCheckIn());
+                      toggle();
+                    }}
+                    color={'blue'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Check In
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/order/checkin')}
+                    color={'red'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Batalkan
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
