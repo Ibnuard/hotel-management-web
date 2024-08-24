@@ -7,7 +7,9 @@ import SelectJumlahTamuAnak from '../../components/Forms/SelectGroup/SelectJumla
 import SelectKetersediaan from '../../components/Forms/SelectGroup/SelectKetersediaan';
 import useFetch from '../../hooks/useFetch';
 import { ADD_KAMAR } from '../../api/routes';
-import { API_STATES } from '../../common/Constants';
+import { API_STATES, MODAL_TYPE } from '../../common/Constants';
+import { useModal } from '../../components/Provider/ModalProvider';
+import { useNavigate } from 'react-router-dom';
 
 const KamarInput = () => {
   const [namaKamar, setNamaKamar] = useState('');
@@ -17,7 +19,15 @@ const KamarInput = () => {
   const [maxAnak, setMaxAnak] = useState('');
   const [ketersediaan, setKetersediaan] = useState('');
 
+  // modal
+  const { toggle, setType, setOnConfirm } = useModal();
+
+  // nav
+  const navigate = useNavigate();
+
   async function onAddKamar() {
+    setType(MODAL_TYPE.LOADING);
+
     const body = {
       nama_kamar: namaKamar,
       nomor_kamar: nomorKamar,
@@ -33,7 +43,14 @@ const KamarInput = () => {
     });
 
     if (state == API_STATES.OK) {
-      alert('OK');
+      setType(MODAL_TYPE.SUCCESS);
+      setOnConfirm(() => {
+        navigate('/admin/kamar');
+        toggle();
+      });
+    } else {
+      setType(MODAL_TYPE.ERROR);
+      setOnConfirm(() => {});
     }
   }
 
@@ -102,7 +119,11 @@ const KamarInput = () => {
                   setValue={setKetersediaan}
                 />
                 <Button
-                  onClick={onAddKamar}
+                  onClick={() => {
+                    setType(MODAL_TYPE.CONFIRMATION);
+                    setOnConfirm(() => onAddKamar());
+                    toggle();
+                  }}
                   color={'blue'}
                   fullWidth
                   className=" mt-8 normal-case"
