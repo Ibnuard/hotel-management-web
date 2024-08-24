@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 type TInputModalProps = {
@@ -7,6 +7,7 @@ type TInputModalProps = {
   value: string;
   onClick: () => void;
   onXClick: () => void;
+  disabled?: boolean; // Add disabled prop
 };
 
 const InputModal: React.FC<TInputModalProps> = ({
@@ -15,17 +16,24 @@ const InputModal: React.FC<TInputModalProps> = ({
   value,
   onClick,
   onXClick,
+  disabled = false, // Default to false
 }) => {
-  const textColor = value ? 'text-black' : 'text-bodydark2 ';
+  const textColor = value ? 'text-black' : 'text-bodydark2';
+  const cursorStyle = disabled ? 'cursor-default' : 'cursor-pointer';
+  const textColorStyle = disabled ? 'text-gray-400' : textColor;
+  const borderColor = disabled ? 'border-gray-300' : 'border-stroke';
+  const bg = disabled ? '' : '';
 
   function _renderRightIcon() {
-    if (value) {
-      return (
-        <XMarkIcon onClick={onXClick} className=" size-6 cursor-pointer" />
-      );
+    if (disabled) {
+      return;
     }
 
-    return <ChevronDownIcon className=" size-6" />;
+    if (value) {
+      return <XMarkIcon onClick={onXClick} className="size-6 cursor-pointer" />;
+    }
+
+    return <ChevronDownIcon className={`size-6 ${cursorStyle}`} />;
   }
 
   return (
@@ -34,8 +42,8 @@ const InputModal: React.FC<TInputModalProps> = ({
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <div
-          onClick={onClick}
-          className={` ${textColor} cursor-pointer min-h-12 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+          onClick={!disabled ? onClick : undefined}
+          className={`${textColorStyle} ${cursorStyle} min-h-12 w-full rounded ${borderColor} border-[1.5px] bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
         >
           {value || placeholder}
         </div>

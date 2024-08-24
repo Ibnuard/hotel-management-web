@@ -27,3 +27,8 @@ export const DELETE_TIPE_KAMAR = (id: any) => `admin/tipe/${id}`;
 // CHECKIN
 export const GET_READY_KAMAR = (page = 1, limit = 100, cari = '') =>
   `checkin/kamar?page=${page}&limit=${limit}&cari=${cari}`;
+export const CREATE_CHECKIN = 'checkin/create';
+
+// CHECKOUT
+export const GET_CHECKOUT_KAMAR = (page = 1, limit = 100, cari = '') =>
+  `checkout/kamar?page=${page}&limit=${limit}&cari=${cari}`;

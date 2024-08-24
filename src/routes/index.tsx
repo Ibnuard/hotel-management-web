@@ -9,13 +9,21 @@ import {
 } from 'react-router-dom';
 import Loader from '../common/Loader';
 
+// Auth
+const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
+
 // Screen CheckIn
 const InHouse = lazy(() => import('../pages/Dashboard/InHouse'));
 const CheckInSelectKamar = lazy(
   () => import('../pages/Dashboard/CheckInSelectKamar'),
 );
 const CheckInForm = lazy(() => import('../pages/Dashboard/CheckInForm'));
-const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
+
+// Screen CheckIn
+const CheckOutSelectKamar = lazy(
+  () => import('../pages/Dashboard/CheckOutSelectKamar'),
+);
+const CheckOutForm = lazy(() => import('../pages/Dashboard/CheckOutForm'));
 
 // Screen Admin
 const Kamar = lazy(() => import('../pages/Admin/Kamar'));
@@ -77,6 +85,37 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Check In')} />
               <CheckInForm />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
+  const routesCheckout: routesTypes[] = [
+    {
+      path: '/',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/order/checkout',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Pilih Kamar')} />
+              <CheckOutSelectKamar />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/checkout/form',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Check Out')} />
+              <CheckOutForm />
             </Suspense>
           ),
         },
@@ -198,6 +237,7 @@ const Routes = () => {
     ...(!token ? routesForUnAuth : []),
     ...routesCheckin,
     ...routesAdmin,
+    ...routesCheckout,
   ]);
 
   return <RouterProvider router={router} />;

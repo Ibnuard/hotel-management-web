@@ -7,7 +7,7 @@ import {
 } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 
-export function KamarCard({
+export function CheckoutCard({
   navTo,
   stateData,
 }: {
@@ -21,13 +21,16 @@ export function KamarCard({
     navigate(navTo, { state: stateData });
   }
 
+  const TAMU = stateData?.tamu;
+  const GET_TAMU_NAME = `${TAMU.nama_depan} ${TAMU.nama_belakang} ( ${TAMU.alias} )`;
+
   return (
     <Card className="mt-6">
       <CardBody>
         <Typography variant="h5" color="blue-gray" className="mb-1">
-          {stateData.nama_kamar} #{stateData.nomor_kamar}
+          {stateData.kamar?.nama_kamar} #{stateData.kamar?.nomor_kamar}
         </Typography>
-        <Typography variant={'h6'}>{stateData.tipeKamar?.tipe}</Typography>
+        <Typography variant={'h6'}>{GET_TAMU_NAME}</Typography>
       </CardBody>
       <CardFooter className="pt-0">
         <Button

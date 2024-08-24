@@ -28,13 +28,13 @@ const SelectTipeIdentitas: React.FC<TProps> = ({ value, setValue }) => {
         <option value="" disabled className="text-body dark:text-bodydark">
           Tipe Identitas
         </option>
-        <option value="1" className="text-body dark:text-bodydark">
+        <option value="KTP" className="text-body dark:text-bodydark">
           KTP
         </option>
-        <option value="2" className="text-body dark:text-bodydark">
+        <option value="PASSPORT" className="text-body dark:text-bodydark">
           Passport
         </option>
-        <option value="3" className="text-body dark:text-bodydark">
+        <option value="LAINNYA" className="text-body dark:text-bodydark">
           Lainnya
         </option>
       </select>

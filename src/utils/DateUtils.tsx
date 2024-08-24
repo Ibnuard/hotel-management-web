@@ -1,4 +1,6 @@
 import moment from 'moment';
+import 'moment/locale/id'; // Import locale
+moment.locale('id'); // Set locale globally
 
 type FormatOptions = {
   dateFormat?: string; // Default format is 'YYYY-MM-DD'

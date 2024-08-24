@@ -33,10 +33,10 @@ const SelectTipeSex: React.FC<TProps> = ({ value, setValue }) => {
           <option value="" disabled className="text-body dark:text-bodydark">
             Panggilan
           </option>
-          <option value="1" className="text-body dark:text-bodydark">
+          <option value="Mr." className="text-body dark:text-bodydark">
             Mr.
           </option>
-          <option value="2" className="text-body dark:text-bodydark">
+          <option value="Mrs." className="text-body dark:text-bodydark">
             Mrs.
           </option>
         </select>

@@ -15,13 +15,15 @@ import useFetch from '../../hooks/useFetch';
 import { CREATE_CHECKIN } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 
-const CheckInForm = () => {
+const CheckOutForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   // parameter
   const stateParameter = location.state;
-  const currentDate = new Date();
+
+  const TAMU_DATA = stateParameter?.tamu;
+  const KAMAR_DATA = stateParameter?.kamar;
 
   // state
 
@@ -29,14 +31,18 @@ const CheckInForm = () => {
   const [tamuVisible, setTamuVisible] = useState(false);
 
   // data state
-  const [tamu, setTamu] = useState<any>();
-  const [jmlTamuDewasa, setJmlTamuDewasa] = useState('');
-  const [jmlTamuAnak, setJmlTamuAnak] = useState('');
-  const [tanggalCI, setTanggalCI] = useState<any>();
-  const [waktuCI, setWaktuCI] = useState<any>();
-  const [tanggalCO, setTanggalCO] = useState<any>();
-  const [waktuCO, setWaktuCO] = useState<any>();
-  const [deposit, setDeposit] = useState<string>('');
+  const [tamu, setTamu] = useState<any>(TAMU_DATA);
+  const [jmlTamuDewasa, setJmlTamuDewasa] = useState(
+    stateParameter?.jumlah_dewasa,
+  );
+  const [jmlTamuAnak, setJmlTamuAnak] = useState(stateParameter?.jumlah_anak);
+  const [tanggalCI, setTanggalCI] = useState<any>(stateParameter?.tgl_checkin);
+  const [waktuCI, setWaktuCI] = useState<any>(stateParameter?.waktu_checkin);
+  const [tanggalCO, setTanggalCO] = useState<any>(stateParameter?.tgl_checkout);
+  const [waktuCO, setWaktuCO] = useState<any>(stateParameter?.waktu_checkout);
+  const [deposit, setDeposit] = useState<string>(
+    stateParameter?.jumlah_deposit,
+  );
 
   // modal
   const { setType, toggle, setOnConfirm } = useModal();
@@ -45,15 +51,6 @@ const CheckInForm = () => {
     const inputValue = e.target.value;
     setDeposit(formatCurrency(inputValue));
   };
-
-  useEffect(() => {
-    setTanggalCI(formatDate(currentDate));
-    setWaktuCI(
-      formatDate(currentDate, {
-        dateFormat: 'HH:mm',
-      }),
-    );
-  }, []);
 
   async function onCheckIn() {
     setType(MODAL_TYPE.LOADING);
@@ -99,18 +96,19 @@ const CheckInForm = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Kamar Dipilih : {stateParameter?.nama_kamar} #
-                {stateParameter?.nomor_kamar}
+                Kamar Dipilih : {KAMAR_DATA?.nama_kamar} #
+                {KAMAR_DATA?.nomor_kamar}
               </h3>
             </div>
             <form action="#">
               <div className="p-6.5">
                 <InputModal
+                  disabled
                   title="Tamu"
                   placeholder="Pilih Tamu"
                   value={
                     tamu
-                      ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang}`
+                      ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang} ( ${tamu.alias} )`
                       : ''
                   }
                   onClick={() => setTamuVisible(!tamuVisible)}
@@ -120,6 +118,7 @@ const CheckInForm = () => {
                 <div className="flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuDewasa
+                      disabled
                       type={'user'}
                       value={jmlTamuDewasa}
                       setValue={setJmlTamuDewasa}
@@ -127,6 +126,7 @@ const CheckInForm = () => {
                   </div>
                   <div className="w-full xl:w-1/2">
                     <SelectJumlahTamuAnak
+                      disabled
                       type={'user'}
                       value={jmlTamuAnak}
                       setValue={setJmlTamuAnak}
@@ -139,6 +139,7 @@ const CheckInForm = () => {
                     Jumlah Deposit ( Rp )
                   </label>
                   <input
+                    disabled
                     type="text"
                     placeholder="Masukan jumlah deposit"
                     value={deposit}
@@ -162,7 +163,7 @@ const CheckInForm = () => {
                           title="Tanggal Check In"
                           value={tanggalCI}
                           onChange={(val: string) => setTanggalCI(val)}
-                          defaultValue={formatDate(currentDate)}
+                          defaultValue={stateParameter?.tgl_checkin}
                         />
                       </div>
                       <div className="w-full xl:w-1/2">
@@ -172,9 +173,7 @@ const CheckInForm = () => {
                           title="Waktu Check In"
                           value={waktuCI}
                           onChange={(val: string) => setWaktuCI(val)}
-                          defaultValue={formatDate(currentDate, {
-                            dateFormat: 'HH:mm',
-                          })}
+                          defaultValue={stateParameter?.waktu_checkin}
                         />
                       </div>
                     </div>
@@ -191,6 +190,7 @@ const CheckInForm = () => {
                     <div className="flex flex-col gap-6 xl:flex-row mb-4.5">
                       <div className="w-full xl:w-1/2">
                         <DatePicker
+                          disabled
                           selector="checkout-date"
                           title="Tanggal Check Out"
                           value={tanggalCO}
@@ -199,6 +199,7 @@ const CheckInForm = () => {
                       </div>
                       <div className="w-full xl:w-1/2">
                         <TimePicker
+                          disabled
                           selector="checkout-time"
                           title="Waktu Check Out"
                           value={waktuCO}
@@ -208,136 +209,12 @@ const CheckInForm = () => {
                     </div>
                   </div>
                 </div>
-                <Button
-                  onClick={() => {
-                    setType(MODAL_TYPE.CONFIRMATION);
-                    setOnConfirm(() => onCheckIn());
-                    toggle();
-                  }}
-                  color={'blue'}
-                  fullWidth
-                  className=" mt-8 normal-case"
-                >
-                  Check In
-                </Button>
               </div>
             </form>
           </div>
         </div>
 
         <div className="flex flex-col gap-9">
-          {/* <!-- Sign In Form --> */}
-          {tamu && (
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  Detail Tamu
-                </h3>
-              </div>
-              <form action="#">
-                <div className="p-6.5">
-                  <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Nama
-                    </label>
-                    <input
-                      value={
-                        tamu
-                          ? `${tamu.sex} ${tamu.nama_depan} ${tamu.nama_belakang} ( ${tamu.alias} )`
-                          : ''
-                      }
-                      disabled
-                      type="text"
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                  <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Identitas
-                    </label>
-                    <div className=" flex flex-row gap-x-4">
-                      <input
-                        value={tamu ? tamu.tipe_identitas : ''}
-                        disabled
-                        type="text"
-                        className=" w-1/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                      <input
-                        value={tamu ? tamu.nomor_identitas : ''}
-                        disabled
-                        type="text"
-                        className=" w-4/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        No. Telpon
-                      </label>
-                      <input
-                        value={tamu ? tamu.no_telp : ''}
-                        disabled
-                        type="text"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Email
-                      </label>
-                      <input
-                        value={tamu ? tamu.email : ''}
-                        disabled
-                        type="text"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <div className=" mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Alamat
-                    </label>
-                    <textarea
-                      value={tamu ? tamu.alamat : ''}
-                      rows={2}
-                      disabled
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    ></textarea>
-                  </div>
-
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Kabupaten / Kota
-                      </label>
-                      <input
-                        value={tamu ? tamu.kabupaten : ''}
-                        disabled
-                        type="text"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Provinsi
-                      </label>
-                      <input
-                        value={tamu ? tamu.provinsi : ''}
-                        disabled
-                        type="text"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          )}
-
           {/* <!-- Sign In Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -353,7 +230,7 @@ const CheckInForm = () => {
                   </label>
                   <div className=" flex flex-col gap-y-1">
                     <Typography variant={'small'}>
-                      {stateParameter.nama_kamar} #{stateParameter.nomor_kamar}
+                      {KAMAR_DATA.nama_kamar} #{KAMAR_DATA.nomor_kamar}
                     </Typography>
                   </div>
                 </div>
@@ -364,24 +241,108 @@ const CheckInForm = () => {
                   </label>
                   <Chip
                     variant="ghost"
-                    value={stateParameter?.tipeKamar?.tipe || 'Tipe Kamar'}
+                    value={KAMAR_DATA?.tipeKamar?.tipe || 'Tipe Kamar'}
                     color={'blue'}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Ketentuan
+                    Keterangan Layanan / Produk
                   </label>
                   <div className=" flex flex-col gap-y-1">
-                    <Typography variant={'small'}>
-                      Maksimal Orang Dewasa: {stateParameter?.max_dewasa} Orang
-                    </Typography>
-                    <Typography variant={'small'}>
-                      Maksimal Anak - anak : {stateParameter?.max_anak} Orang
-                    </Typography>
+                    <div className=" flex flex-row justify-between">
+                      <Typography variant={'small'}>Harga</Typography>
+                      <Typography color={'black'} variant={'small'}>
+                        Rp 1.000.000
+                      </Typography>
+                    </div>
+                    <div className=" flex flex-row justify-between">
+                      <Typography variant={'small'}>Qty</Typography>
+                      <Typography color={'black'} variant={'small'}>
+                        1 Malam
+                      </Typography>
+                    </div>
+                    <div className=" flex flex-row justify-between mb-2">
+                      <Typography
+                        className=" font-semibold text-boxdark-2"
+                        variant={'small'}
+                      >
+                        Sub-Total
+                      </Typography>
+                      <Typography
+                        color={'black'}
+                        className=" font-semibold"
+                        variant={'small'}
+                      >
+                        1 Malam
+                      </Typography>
+                    </div>
+                    <div className=" flex flex-row justify-between">
+                      <Typography variant={'small'}>PPn 11%</Typography>
+                      <Typography color={'black'} variant={'small'}>
+                        Rp 1.000.000
+                      </Typography>
+                    </div>
+                    <div className=" flex flex-row justify-between">
+                      <Typography variant={'small'}>Jumlah Deposit</Typography>
+                      <Typography color={'black'} variant={'small'}>
+                        1 Malam
+                      </Typography>
+                    </div>
+                    <div className=" flex flex-row justify-between">
+                      <Typography
+                        color={'black'}
+                        className=" font-semibold text-boxdark-2"
+                        variant={'small'}
+                      >
+                        Grand Total
+                      </Typography>
+                      <Typography
+                        color={'black'}
+                        className=" font-semibold"
+                        variant={'small'}
+                      >
+                        1 Malam
+                      </Typography>
+                    </div>
                   </div>
                 </div>
+                <div className=" flex flex-row gap-x-4">
+                  <Button
+                    onClick={() => {
+                      setType(MODAL_TYPE.CONFIRMATION);
+                      setOnConfirm(() => onCheckIn());
+                      toggle();
+                    }}
+                    color={'blue'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Check Out
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setType(MODAL_TYPE.CONFIRMATION);
+                      setOnConfirm(() => onCheckIn());
+                      toggle();
+                    }}
+                    color={'deep-orange'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Cetak Invoice
+                  </Button>
+                </div>
+                <Button
+                  onClick={() => navigate('/order/checkout')}
+                  variant={'outlined'}
+                  color={'red'}
+                  fullWidth
+                  className=" mt-8 normal-case"
+                >
+                  Batalkan
+                </Button>
               </div>
             </div>
           </div>
@@ -397,4 +358,4 @@ const CheckInForm = () => {
   );
 };
 
-export default CheckInForm;
+export default CheckOutForm;

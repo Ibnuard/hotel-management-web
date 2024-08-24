@@ -3,6 +3,7 @@ import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
 import { PowerIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks/useAuth';
+import { formatDate } from '../../utils/DateUtils';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,7 +25,9 @@ const DropdownUser = () => {
           <span className="block text-sm font-medium text-black dark:text-white">
             {user.nama}
           </span>
-          <span className="block text-xs">ADMIN</span>
+          <span className="block text-xs">
+            {formatDate(new Date(), { dateFormat: 'lll' })}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
