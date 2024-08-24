@@ -10,30 +10,30 @@ import {
   CardBody,
   Chip,
   CardFooter,
-  Avatar,
   IconButton,
   Tooltip,
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
-import { GET_ALL_KAMAR } from '../../api/routes';
+import { GET_ALL_TAMU } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
 
 const TABLE_HEAD = [
-  'Nama Kamar',
-  'Nomor Kamar',
-  'Tipe Kamar',
-  'Ketersediaan',
+  'Nama Tamu',
+  'Alias',
+  'Warga Negara',
+  'No. Telpon',
+  'Email',
   '',
 ];
 
-const Kamar = () => {
+const Tamu = () => {
   // state
   const [page, setPage] = useState(1);
   const [pageInfo, setPageInfo] = useState<any>();
-  const [kamarList, setKamarList] = useState([]);
+  const [tamuList, setTamuList] = useState([]);
   const [cari, setCari] = useState('');
 
   // navigation
@@ -43,25 +43,25 @@ const Kamar = () => {
   const { setType, toggle } = useModal();
 
   useEffect(() => {
-    getAllKamar();
+    getAllTamu();
   }, [page]);
 
-  async function getAllKamar() {
+  async function getAllTamu() {
     setType(MODAL_TYPE.LOADING);
     toggle();
 
     const { state, data, error } = await useFetch({
-      url: GET_ALL_KAMAR(page, 5, cari),
+      url: GET_ALL_TAMU(page, 5, cari),
       method: 'GET',
     });
 
     if (state == API_STATES.OK) {
       toggle();
-      setKamarList(data.data);
+      setTamuList(data.data);
       setPageInfo(data.pagination);
     } else {
       toggle();
-      setKamarList([]);
+      setTamuList([]);
       setPageInfo(null);
     }
   }
@@ -69,19 +69,17 @@ const Kamar = () => {
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       setPage(1); // Reset to the first page on search
-      getAllKamar();
+      getAllTamu();
     }
   }
 
-  function onEditKamar(item: any) {
-    console.log('kamar', item);
-
-    navigate(`/admin/kamar/${item.id}`, { state: item });
+  function onEditTamu(item: any) {
+    navigate(`/admin/tamu/${item.id}`, { state: item });
   }
 
   return (
     <>
-      <Breadcrumb pageName="Manajemen Kamar" />
+      <Breadcrumb pageName="Manajemen Tamu" />
 
       <div className="w-full">
         <Card className="h-full w-full">
@@ -89,10 +87,10 @@ const Kamar = () => {
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray">
-                  List Kamar
+                  Daftar Tamu
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
-                  Melihat informasi semua kamar yang ada
+                  Melihat informasi semua tamu yang ada
                 </Typography>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -103,13 +101,13 @@ const Kamar = () => {
                   onClick={() => navigate('/admin/tamu/input')}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Tambah
-                  Kamar Baru
+                  Tamu Baru
                 </Button>
               </div>
             </div>
             <div className="w-full md:w-72">
               <Input
-                label="Cari"
+                label="Cari tamu"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 value={cari}
                 onChange={(e) => setCari(e.target.value)}
@@ -138,12 +136,21 @@ const Kamar = () => {
                 </tr>
               </thead>
               <tbody>
-                {kamarList.map(
+                {tamuList.map(
                   (
-                    { id, nama_kamar, nomor_kamar, tipe_kamar, is_tersedia },
+                    {
+                      id,
+                      sex,
+                      nama_depan,
+                      nama_belakang,
+                      alias,
+                      asal_negara,
+                      no_telp,
+                      email,
+                    },
                     index,
                   ) => {
-                    const isLast = index === kamarList.length - 1;
+                    const isLast = index === tamuList.length - 1;
                     const classes = isLast
                       ? 'p-4'
                       : 'p-4 border-b border-blue-gray-50';
@@ -158,7 +165,7 @@ const Kamar = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {nama_kamar}
+                                {`${sex} ${nama_depan} ${nama_belakang}`}
                               </Typography>
                             </div>
                           </div>
@@ -169,7 +176,7 @@ const Kamar = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {nomor_kamar}
+                            {alias}
                           </Typography>
                         </td>
                         <td className={classes}>
@@ -178,29 +185,32 @@ const Kamar = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {tipe_kamar}
+                            {asal_negara}
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <div className="w-max">
-                            <Chip
-                              variant="ghost"
-                              size="sm"
-                              className=" normal-case"
-                              value={
-                                is_tersedia == '1'
-                                  ? 'Tersedia'
-                                  : 'Tidak tersedia'
-                              }
-                              color={is_tersedia == '1' ? 'green' : 'red'}
-                            />
-                          </div>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {no_telp}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {email}
+                          </Typography>
                         </td>
                         <td className={classes}>
                           <Tooltip content="Edit">
                             <IconButton
                               variant="text"
-                              onClick={() => onEditKamar(kamarList[index])}
+                              onClick={() => onEditTamu(tamuList[index])}
                             >
                               <PencilIcon className="h-4 w-4" />
                             </IconButton>
@@ -248,4 +258,4 @@ const Kamar = () => {
   );
 };
 
-export default Kamar;
+export default Tamu;

@@ -10,7 +10,6 @@ import TimePicker from '../../components/Forms/DatePicker/TimePicker';
 import { Button, Chip, Typography } from '@material-tailwind/react';
 import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
-import FileModal from '../../components/Modals/FileModal';
 
 const CheckInForm = () => {
   const location = useLocation();
@@ -23,7 +22,6 @@ const CheckInForm = () => {
 
   // modal state
   const [tamuVisible, setTamuVisible] = useState(false);
-  const [fileVisible, setFileVisible] = useState(false);
 
   // data state
   const [tamu, setTamu] = useState<any>();
@@ -188,19 +186,17 @@ const CheckInForm = () => {
                   </label>
                   <div className=" flex flex-row gap-x-4">
                     <input
-                      defaultValue={'KTP | 1234567890'}
+                      defaultValue={'KTP'}
                       disabled
                       type="text"
-                      className=" w-2/3 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className=" w-1/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                    <Button
-                      className=" w-1/3 normal-case"
-                      color={'blue'}
-                      variant="outlined"
-                      onClick={() => setFileVisible(!fileVisible)}
-                    >
-                      Lihat Foto
-                    </Button>
+                    <input
+                      defaultValue={'1234567890'}
+                      disabled
+                      type="text"
+                      className=" w-4/5 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                   </div>
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -312,14 +308,6 @@ const CheckInForm = () => {
         visible={tamuVisible}
         toggle={() => setTamuVisible(!tamuVisible)}
         value={(val: string) => setTamu(val)}
-      />
-
-      <FileModal
-        visible={fileVisible}
-        toggle={() => setFileVisible(!fileVisible)}
-        data={
-          'https://assets.pikiran-rakyat.com/crop/0x813:1022x1460/x/photo/2021/02/16/1553449315.jpg'
-        }
       />
     </>
   );
