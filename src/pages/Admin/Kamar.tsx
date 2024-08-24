@@ -14,7 +14,12 @@ import {
   IconButton,
   Tooltip,
 } from '@material-tailwind/react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useFetch from '../../hooks/useFetch';
+import { GET_ALL_KAMAR } from '../../api/routes';
+import { API_STATES, MODAL_TYPE } from '../../common/Constants';
+import { useModal } from '../../components/Provider/ModalProvider';
 
 const TABLE_HEAD = [
   'Nama Kamar',
@@ -24,56 +29,55 @@ const TABLE_HEAD = [
   '',
 ];
 
-const TABLE_ROWS = [
-  {
-    img: 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg',
-    name: 'John Michael',
-    email: 'john@creative-tim.com',
-    job: 'Manager',
-    org: 'Organization',
-    online: true,
-    date: '23/04/18',
-  },
-  {
-    img: 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg',
-    name: 'Alexa Liras',
-    email: 'alexa@creative-tim.com',
-    job: 'Programator',
-    org: 'Developer',
-    online: false,
-    date: '23/04/18',
-  },
-  {
-    img: 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg',
-    name: 'Laurent Perrier',
-    email: 'laurent@creative-tim.com',
-    job: 'Executive',
-    org: 'Projects',
-    online: false,
-    date: '19/09/17',
-  },
-  {
-    img: 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg',
-    name: 'Michael Levi',
-    email: 'michael@creative-tim.com',
-    job: 'Programator',
-    org: 'Developer',
-    online: true,
-    date: '24/12/08',
-  },
-  {
-    img: 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg',
-    name: 'Richard Gran',
-    email: 'richard@creative-tim.com',
-    job: 'Manager',
-    org: 'Executive',
-    online: false,
-    date: '04/10/21',
-  },
-];
-
 const Kamar = () => {
+  // state
+  const [page, setPage] = useState(1);
+  const [pageInfo, setPageInfo] = useState<any>();
+  const [kamarList, setKamarList] = useState([]);
+  const [cari, setCari] = useState('');
+
+  // navigation
   const navigate = useNavigate();
+
+  // modal
+  const { setType, toggle } = useModal();
+
+  useEffect(() => {
+    getAllKamar();
+  }, [page]);
+
+  async function getAllKamar() {
+    setType(MODAL_TYPE.LOADING);
+    toggle();
+
+    const { state, data, error } = await useFetch({
+      url: GET_ALL_KAMAR(page, 5, cari),
+      method: 'GET',
+    });
+
+    if (state == API_STATES.OK) {
+      toggle();
+      setKamarList(data.data);
+      setPageInfo(data.pagination);
+    } else {
+      toggle();
+      setKamarList([]);
+      setPageInfo(null);
+    }
+  }
+
+  function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      setPage(1); // Reset to the first page on search
+      getAllKamar();
+    }
+  }
+
+  function onEditKamar(item: any) {
+    console.log('kamar', item);
+
+    navigate(`/admin/kamar/${item.id}`, { state: item });
+  }
 
   return (
     <>
@@ -105,8 +109,11 @@ const Kamar = () => {
             </div>
             <div className="w-full md:w-72">
               <Input
-                label="Search"
+                label="Cari"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                value={cari}
+                onChange={(e) => setCari(e.target.value)}
+                onKeyDown={handleSearchKeyDown} // Trigger search on "Enter"
               />
             </div>
           </CardHeader>
@@ -131,32 +138,27 @@ const Kamar = () => {
                 </tr>
               </thead>
               <tbody>
-                {TABLE_ROWS.map(
-                  ({ img, name, email, job, org, online, date }, index) => {
-                    const isLast = index === TABLE_ROWS.length - 1;
+                {kamarList.map(
+                  (
+                    { id, nama_kamar, nomor_kamar, tipe_kamar, is_tersedia },
+                    index,
+                  ) => {
+                    const isLast = index === kamarList.length - 1;
                     const classes = isLast
                       ? 'p-4'
                       : 'p-4 border-b border-blue-gray-50';
 
                     return (
-                      <tr key={name}>
+                      <tr key={id}>
                         <td className={classes}>
                           <div className="flex items-center gap-3">
-                            <Avatar src={img} alt={name} size="sm" />
                             <div className="flex flex-col">
                               <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {name}
-                              </Typography>
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal opacity-70"
-                              >
-                                {email}
+                                {nama_kamar}
                               </Typography>
                             </div>
                           </div>
@@ -167,7 +169,16 @@ const Kamar = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {date}
+                            {nomor_kamar}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {tipe_kamar}
                           </Typography>
                         </td>
                         <td className={classes}>
@@ -175,24 +186,22 @@ const Kamar = () => {
                             <Chip
                               variant="ghost"
                               size="sm"
-                              value={online ? 'online' : 'offline'}
-                              color={online ? 'green' : 'blue-gray'}
+                              className=" normal-case"
+                              value={
+                                is_tersedia == '1'
+                                  ? 'Tersedia'
+                                  : 'Tidak tersedia'
+                              }
+                              color={is_tersedia == '1' ? 'green' : 'red'}
                             />
                           </div>
                         </td>
                         <td className={classes}>
-                          <div className="w-max">
-                            <Chip
-                              variant="ghost"
-                              size="sm"
-                              value={online ? 'online' : 'offline'}
-                              color={online ? 'green' : 'blue-gray'}
-                            />
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <Tooltip content="Edit User">
-                            <IconButton variant="text">
+                          <Tooltip content="Edit">
+                            <IconButton
+                              variant="text"
+                              onClick={() => onEditKamar(kamarList[index])}
+                            >
                               <PencilIcon className="h-4 w-4" />
                             </IconButton>
                           </Tooltip>
@@ -210,13 +219,25 @@ const Kamar = () => {
               color="blue-gray"
               className="font-normal"
             >
-              Halaman 1 dari 10
+              Halaman {page} dari {pageInfo?.totalPages}
             </Typography>
             <div className="flex gap-2">
-              <Button variant="outlined" size="sm">
-                Previous
+              <Button
+                disabled={page == 1}
+                variant="outlined"
+                size="sm"
+                className=" normal-case"
+                onClick={() => setPage(page - 1)}
+              >
+                Prev
               </Button>
-              <Button variant="outlined" size="sm">
+              <Button
+                disabled={page == pageInfo?.totalPages}
+                variant="outlined"
+                size="sm"
+                className=" normal-case"
+                onClick={() => setPage(page + 1)}
+              >
                 Next
               </Button>
             </div>

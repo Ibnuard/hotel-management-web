@@ -25,6 +25,15 @@ const KamarInput = () => {
   // nav
   const navigate = useNavigate();
 
+  // button
+  const isButtonDisabled =
+    !namaKamar ||
+    !nomorKamar ||
+    !tipeKamar ||
+    !maxDewasa ||
+    !maxAnak ||
+    !ketersediaan;
+
   async function onAddKamar() {
     setType(MODAL_TYPE.LOADING);
 
@@ -87,7 +96,7 @@ const KamarInput = () => {
                     Nomor Kamar
                   </label>
                   <input
-                    type="text"
+                    type={'number'}
                     placeholder="Masukan nomor kamar"
                     value={nomorKamar}
                     onChange={(e) => setNomorKamar(e.target.value)}
@@ -119,6 +128,7 @@ const KamarInput = () => {
                   setValue={setKetersediaan}
                 />
                 <Button
+                  disabled={isButtonDisabled}
                   onClick={() => {
                     setType(MODAL_TYPE.CONFIRMATION);
                     setOnConfirm(() => onAddKamar());
