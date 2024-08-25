@@ -68,6 +68,7 @@ const KamarDetails = () => {
       max_dewasa: maxDewasa,
       max_anak: maxAnak,
       is_tersedia: ketersediaan,
+      harga: harga,
     };
     const { state, data, error } = await useFetch({
       url: EDIT_KAMAR(id),

@@ -1,5 +1,5 @@
 export const BASE_URL =
-  /*'http://localhost:8080/';*/ 'https://anggrekapi.my.id/';
+  'http://localhost:8080/'; /*'https://anggrekapi.my.id/'*/
 
 // KAMAR
 export const ADD_KAMAR = 'admin/add-kamar';
