@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://localhost:8080/';
+export const BASE_URL =
+  'https://anggrekapi.my.id/'; /*'http://localhost:8080/'*/
 
 // PATH
 export const LOGIN = 'admin/login';
