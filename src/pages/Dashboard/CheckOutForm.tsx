@@ -10,9 +10,8 @@ import { Button, Chip, Typography } from '@material-tailwind/react';
 import { formatCurrency } from '../../utils/Utility';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
-import { CREATE_CHECKIN, GET_CHECKOUT_KAMAR_DETAIL } from '../../api/routes';
+import { GET_CHECKOUT_KAMAR_DETAIL } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
-import InvoiceModal from '../../components/Modals/InvoiceModal';
 
 const CheckOutForm = () => {
   const location = useLocation();
@@ -28,7 +27,6 @@ const CheckOutForm = () => {
 
   // modal state
   const [tamuVisible, setTamuVisible] = useState(false);
-  const [invoiceVisible, setInvoiceVisible] = useState(false);
 
   // data state
   const [tamu, setTamu] = useState<any>(TAMU_DATA);
@@ -334,7 +332,11 @@ const CheckOutForm = () => {
                     Check Out
                   </Button>
                   <Button
-                    onClick={() => setInvoiceVisible(!invoiceVisible)}
+                    onClick={() =>
+                      navigate('/order/checkout/invoice', {
+                        state: { ...stateParameter, order: orderDetail },
+                      })
+                    }
                     color={'deep-orange'}
                     fullWidth
                     className=" mt-8 normal-case"
@@ -356,11 +358,6 @@ const CheckOutForm = () => {
           </div>
         </div>
       </div>
-      <InvoiceModal
-        visible={invoiceVisible}
-        toggle={setInvoiceVisible}
-        data={stateParameter}
-      />
     </>
   );
 };

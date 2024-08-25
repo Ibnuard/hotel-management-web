@@ -19,6 +19,7 @@ const CheckInSelectKamar = lazy(
 );
 const CheckInForm = lazy(() => import('../pages/Dashboard/CheckInForm'));
 const CheckInEdit = lazy(() => import('../pages/Dashboard/CheckInEdit'));
+const Invoice = lazy(() => import('../pages/Dashboard/Invoice'));
 
 // Screen CheckIn
 const CheckOutSelectKamar = lazy(
@@ -126,6 +127,15 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Check Out')} />
               <CheckOutForm />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/checkout/invoice',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Invoice')} />
+              <Invoice />
             </Suspense>
           ),
         },

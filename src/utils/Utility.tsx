@@ -2,7 +2,7 @@ export const formatCurrency = (num: string) => {
   if (!num) return 'Rp 0';
 
   // Remove any non-digit characters
-  let cleanNum = num.replace(/[^0-9]/g, '');
+  let cleanNum = String(num).replace(/[^0-9]/g, '');
 
   // Allow a single leading zero or remove leading zeros
   if (cleanNum.startsWith('0') && cleanNum.length > 1) {
