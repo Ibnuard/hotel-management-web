@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import { useLocation } from 'react-router-dom';
 import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
+import Logo from '../../images/logo.png';
 
 const Invoice: React.FC = () => {
   const location = useLocation();
@@ -67,7 +68,8 @@ const Invoice: React.FC = () => {
       <div className=" bg-white">
         <div id="invoiceCapture" className="p-8 w-full">
           <div className="flex flex-col gap-4">
-            <Typography variant={'h5'}>Anggrek Inn 2</Typography>
+            {/* <Typography variant={'h5'}>Anggrek Inn 2</Typography> */}
+            <img className="h-20 w-40 object-center" src={Logo} alt="logo" />
             <span className="w-1/3 font-satoshi text-body font-normal">
               Jl. Waitabula Kelurahan Langga lero Kecamatan kota tambolaka
               Kabupaten Sumba Barat Daya
