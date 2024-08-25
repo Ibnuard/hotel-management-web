@@ -356,6 +356,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
         </nav>
+        <div className="mt-auto mb-4 px-6 absolute bottom-1">
+          <p className="text-sm text-white">Versi 1.0.1</p>
+        </div>
       </div>
     </aside>
   );

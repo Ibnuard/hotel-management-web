@@ -49,7 +49,7 @@ const Invoice: React.FC = () => {
 
     html2canvas(invoiceElement)
       .then((canvas: HTMLCanvasElement) => {
-        const imgData = canvas.toDataURL('image/png', 1.0);
+        const imgData = canvas.toDataURL('image/jpeg', 1);
         const pdf = new jsPDF({
           orientation: 'portrait',
           unit: 'pt',
@@ -61,7 +61,7 @@ const Invoice: React.FC = () => {
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
         // Convert PDF to Blob
         const pdfBlob = pdf.output('blob');
