@@ -1,5 +1,4 @@
-export const BASE_URL =
-  'https://anggrekapi.my.id/'; /*'http://localhost:8080/'*/
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // PATH
 export const LOGIN = 'admin/login';
