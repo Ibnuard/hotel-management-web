@@ -8,12 +8,15 @@ import { formatCurrency } from '../../utils/Utility';
 import Logo from '../../images/logo.png';
 import useFetch from '../../hooks/useFetch';
 import { SEND_INVOICE } from '../../api/routes';
-import { API_STATES } from '../../common/Constants';
+import { API_STATES, MODAL_TYPE } from '../../common/Constants';
+import { useModal } from '../../components/Provider/ModalProvider';
 
 const Invoice: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const stateParam = location.state;
+
+  const { setType, toggle, setOnConfirm } = useModal();
 
   const TAMU_DATA = stateParam?.tamu;
   const KAMAR_DATA = stateParam?.kamar;
@@ -27,6 +30,14 @@ const Invoice: React.FC = () => {
   }
 
   function GenerateInvoice(send?: boolean): void {
+    if (send && !TAMU_DATA.email) {
+      alert(
+        'Tamu ini tidak memiliki data email, silahkan tambahkan di buku tamu.',
+      );
+      toggle();
+      return;
+    }
+
     const invoiceElement = document.querySelector(
       '#invoiceCapture',
     ) as HTMLElement;
@@ -66,19 +77,22 @@ const Invoice: React.FC = () => {
   }
 
   async function sendEmailWithInvoice(pdfBlob: Blob) {
+    setType(MODAL_TYPE.LOADING);
     const formData = new FormData();
     formData.append('invoice', pdfBlob, `${stateParam.invoice_id}.pdf`);
 
     const { state, data, error } = await useFetch({
-      url: SEND_INVOICE(stateParam.invoice_id, 'azxarblog@gmail.com'),
+      url: SEND_INVOICE(stateParam.invoice_id, TAMU_DATA?.email),
       method: 'POST',
       data: formData,
     });
 
     if (state == API_STATES.OK) {
-      console.log('SUCCES');
+      setType(MODAL_TYPE.SUCCESS);
+      setOnConfirm(() => toggle());
     } else {
-      console.log('FAILED');
+      setType(MODAL_TYPE.ERROR);
+      setOnConfirm(() => toggle());
     }
   }
 
@@ -96,7 +110,11 @@ const Invoice: React.FC = () => {
           className=" normal-case"
           color={'blue'}
           variant={'outlined'}
-          onClick={() => GenerateInvoice(true)}
+          onClick={() => {
+            setType(MODAL_TYPE.CONFIRMATION);
+            setOnConfirm(() => GenerateInvoice(true));
+            toggle();
+          }}
         >
           Kirim ke Email
         </Button>
