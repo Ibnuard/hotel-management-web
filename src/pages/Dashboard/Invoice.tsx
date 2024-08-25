@@ -6,6 +6,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import Logo from '../../images/logo.png';
+import useFetch from '../../hooks/useFetch';
+import { SEND_INVOICE } from '../../api/routes';
+import { API_STATES } from '../../common/Constants';
 
 const Invoice: React.FC = () => {
   const location = useLocation();
@@ -23,7 +26,7 @@ const Invoice: React.FC = () => {
     return `${kamar.nama_kamar} #${kamar.nomor_kamar}`;
   }
 
-  function GenerateInvoice(): void {
+  function GenerateInvoice(send?: boolean): void {
     const invoiceElement = document.querySelector(
       '#invoiceCapture',
     ) as HTMLElement;
@@ -48,11 +51,35 @@ const Invoice: React.FC = () => {
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('invoice-001.pdf');
+
+        // Convert PDF to Blob
+        const pdfBlob = pdf.output('blob');
+        if (send) {
+          sendEmailWithInvoice(pdfBlob);
+        } else {
+          pdf.save(`${stateParam.invoice_id}.pdf`);
+        }
       })
       .catch((error) => {
         console.error('Failed to generate invoice PDF', error);
       });
+  }
+
+  async function sendEmailWithInvoice(pdfBlob: Blob) {
+    const formData = new FormData();
+    formData.append('invoice', pdfBlob, `${stateParam.invoice_id}.pdf`);
+
+    const { state, data, error } = await useFetch({
+      url: SEND_INVOICE(stateParam.invoice_id, 'azxarblog@gmail.com'),
+      method: 'POST',
+      data: formData,
+    });
+
+    if (state == API_STATES.OK) {
+      console.log('SUCCES');
+    } else {
+      console.log('FAILED');
+    }
   }
 
   return (
@@ -61,9 +88,17 @@ const Invoice: React.FC = () => {
         <Button
           className=" normal-case"
           color={'blue'}
-          onClick={GenerateInvoice}
+          onClick={() => GenerateInvoice(false)}
         >
           Download Invoice
+        </Button>
+        <Button
+          className=" normal-case"
+          color={'blue'}
+          variant={'outlined'}
+          onClick={() => GenerateInvoice(true)}
+        >
+          Kirim ke Email
         </Button>
         <Button
           variant={'outlined'}

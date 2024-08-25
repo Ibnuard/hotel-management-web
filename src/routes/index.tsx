@@ -45,6 +45,9 @@ const TipeKamar = lazy(() => import('../pages/Admin/TipeKamar'));
 const TipeKamarDetails = lazy(() => import('../pages/Admin/TipeKamarDetails'));
 const TipeKamarInput = lazy(() => import('../pages/Admin/TipeKamarInput'));
 
+// setting
+const Settings = lazy(() => import('../pages/Setting/Settings'));
+
 const Routes = () => {
   const { token } = useAuth();
 
@@ -271,6 +274,28 @@ const Routes = () => {
     },
   ];
 
+  const routesSetting: routesTypes[] = [
+    {
+      path: '/',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/settings',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Pengaturan')} />
+              <Settings />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
   const routesForUnAuth: routesTypes[] = [
     {
       path: '/login',
@@ -288,6 +313,7 @@ const Routes = () => {
     ...routesCheckin,
     ...routesAdmin,
     ...routesCheckout,
+    ...routesSetting,
   ]);
 
   return <RouterProvider router={router} />;

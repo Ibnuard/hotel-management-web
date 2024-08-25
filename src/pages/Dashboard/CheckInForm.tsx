@@ -48,11 +48,6 @@ const CheckInForm = () => {
 
   useEffect(() => {
     setTanggalCI(formatDate(currentDate));
-    setWaktuCI(
-      formatDate(currentDate, {
-        dateFormat: 'HH:mm',
-      }),
-    );
   }, []);
 
   async function onCheckIn() {
@@ -174,14 +169,10 @@ const CheckInForm = () => {
                       </div>
                       <div className="w-full xl:w-1/2">
                         <TimePicker
-                          disabled
                           selector="checkin-time"
                           title="Waktu Check In"
                           value={waktuCI}
                           onChange={(val: string) => setWaktuCI(val)}
-                          defaultValue={formatDate(currentDate, {
-                            dateFormat: 'HH:mm',
-                          })}
                         />
                       </div>
                     </div>

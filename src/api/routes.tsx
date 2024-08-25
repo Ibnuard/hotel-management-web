@@ -1,8 +1,5 @@
 export const BASE_URL = 'https://anggrekapi.my.id/';
 
-// PATH
-export const LOGIN = 'admin/login';
-
 // KAMAR
 export const ADD_KAMAR = 'admin/add-kamar';
 export const EDIT_KAMAR = (id: any) => `admin/edit-kamar/${id}`;
@@ -41,6 +38,16 @@ export const GET_CHECKOUT_KAMAR_DETAIL = (id: number) => `checkout/kamar/${id}`;
 // ORDER
 export const GET_HISTORY = (page = 1, limit = 100, cari = '') =>
   `order/history?page=${page}&limit=${limit}&cari=${cari}`;
-// CHECKOUT
+
+// STATS
 export const GET_CHECKOUT_TODAY = (page = 1, limit = 100, cari = '') =>
   `order/checkout-today?page=${page}&limit=${limit}&cari=${cari}`;
+
+// PATH
+export const LOGIN = 'admin/login';
+export const GET_SA = 'admin/data';
+export const UPDATE_SA = 'admin/update';
+
+// INVOICE
+export const SEND_INVOICE = (inv: string, receiver: string) =>
+  `order/invoice/send?inv=${inv}&receiver=${receiver}`;
