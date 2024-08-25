@@ -52,6 +52,7 @@ const KamarDetails = () => {
       setMaxDewasa(stateParams.max_dewasa);
       setMaxAnak(stateParams.max_anak);
       setKetersediaan(stateParams.is_tersedia);
+      setHarga(formatCurrency(stateParams.harga));
     }
   }, [id]);
 

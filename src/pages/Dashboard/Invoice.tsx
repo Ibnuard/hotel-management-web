@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Button, Typography } from '@material-tailwind/react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency } from '../../utils/Utility';
 import Logo from '../../images/logo.png';
 
 const Invoice: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const stateParam = location.state;
 
   const TAMU_DATA = stateParam?.tamu;
@@ -56,13 +57,21 @@ const Invoice: React.FC = () => {
 
   return (
     <>
-      <div className=" mb-4.5">
+      <div className=" mb-4.5 flex flex-row gap-x-4">
         <Button
           className=" normal-case"
           color={'blue'}
           onClick={GenerateInvoice}
         >
           Download Invoice
+        </Button>
+        <Button
+          variant={'outlined'}
+          className=" normal-case"
+          color={'deep-orange'}
+          onClick={() => navigate(-1)}
+        >
+          Batalkan
         </Button>
       </div>
       <div className=" bg-white">
