@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import CardDataStats from '../../components/CardDataStats';
 import {
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Chip,
   IconButton,
   Input,
   Tooltip,
@@ -14,15 +12,18 @@ import {
 } from '@material-tailwind/react';
 import {
   MagnifyingGlassIcon,
-  PencilIcon,
-  ArchiveBoxArrowDownIcon,
-  ArchiveBoxXMarkIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../components/Provider/ModalProvider';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import useFetch from '../../hooks/useFetch';
-import { GET_CHECKOUT_KAMAR, GET_KAMAR_STATS } from '../../api/routes';
+import {
+  GET_CHECKOUT_TODAY,
+  GET_HISTORY,
+  GET_KAMAR_STATS,
+} from '../../api/routes';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 const TABLE_HEAD = [
   'Nama Tamu',
@@ -32,14 +33,12 @@ const TABLE_HEAD = [
   '',
 ];
 
-const InHouse: React.FC = () => {
+const CheckoutToday: React.FC = () => {
   // state
   const [page, setPage] = useState(1);
   const [pageInfo, setPageInfo] = useState<any>();
   const [kamarList, setKamarList] = useState([]);
   const [cari, setCari] = useState('');
-
-  const [kamarStats, setKamarStats] = useState<any>();
 
   // navigation
   const navigate = useNavigate();
@@ -49,7 +48,6 @@ const InHouse: React.FC = () => {
 
   useEffect(() => {
     getAllKamar();
-    getKamarStats();
   }, [page]);
 
   async function getAllKamar() {
@@ -57,7 +55,7 @@ const InHouse: React.FC = () => {
     toggle();
 
     const { state, data, error } = await useFetch({
-      url: GET_CHECKOUT_KAMAR(page, 5, cari),
+      url: GET_CHECKOUT_TODAY(page, 5, cari),
       method: 'GET',
     });
 
@@ -72,19 +70,6 @@ const InHouse: React.FC = () => {
     }
   }
 
-  async function getKamarStats() {
-    const { state, data, error } = await useFetch({
-      url: GET_KAMAR_STATS,
-      method: 'GET',
-    });
-
-    if (state == API_STATES.OK) {
-      setKamarStats(data);
-    } else {
-      setKamarStats(null);
-    }
-  }
-
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       setPage(1); // Reset to the first page on search
@@ -93,7 +78,7 @@ const InHouse: React.FC = () => {
   }
 
   function onEditKamar(item: any) {
-    navigate(`/order/checkin/edit`, { state: item });
+    navigate(`/order/checkout/form`, { state: item });
   }
 
   function getNamaTamu(item: any) {
@@ -106,20 +91,7 @@ const InHouse: React.FC = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Kamar Tersedia" total={kamarStats?.ready || 0}>
-          <ArchiveBoxArrowDownIcon className=" size-6" />
-        </CardDataStats>
-        <CardDataStats
-          title="Kamar Tidak tersedia"
-          total={kamarStats?.unready || 0}
-        >
-          <ArchiveBoxXMarkIcon className=" size-6" />
-        </CardDataStats>
-        <CardDataStats title="Kamar Terpakai" total={kamarStats?.used || 0}>
-          <ArchiveBoxXMarkIcon className=" size-6" />
-        </CardDataStats>
-      </div>
+      <Breadcrumb pageName="Riwayat" />
 
       <div className="mt-4 grid grid-cols-1 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <Card className="h-full w-full">
@@ -127,10 +99,10 @@ const InHouse: React.FC = () => {
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray">
-                  Tamu In House
+                  Riwayat Tamu
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
-                  Melihat informasi semua tamu in house
+                  Melihat informasi semua riwayat tamu
                 </Typography>
               </div>
             </div>
@@ -214,12 +186,12 @@ const InHouse: React.FC = () => {
                         </Typography>
                       </td>
                       <td className={classes}>
-                        <Tooltip content="Edit">
+                        <Tooltip content="Detail">
                           <IconButton
                             variant="text"
                             onClick={() => onEditKamar(kamarList[index])}
                           >
-                            <PencilIcon className="h-4 w-4" />
+                            <DocumentTextIcon className="h-4 w-4" />
                           </IconButton>
                         </Tooltip>
                       </td>
@@ -264,4 +236,4 @@ const InHouse: React.FC = () => {
   );
 };
 
-export default InHouse;
+export default CheckoutToday;

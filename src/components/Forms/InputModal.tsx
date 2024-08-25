@@ -22,7 +22,7 @@ const InputModal: React.FC<TInputModalProps> = ({
   const cursorStyle = disabled ? 'cursor-default' : 'cursor-pointer';
   const textColorStyle = disabled ? 'text-gray-400' : textColor;
   const borderColor = disabled ? 'border-gray-300' : 'border-stroke';
-  const bg = disabled ? '' : '';
+  const bg = disabled ? 'opacity-50' : '';
 
   function _renderRightIcon() {
     if (disabled) {
@@ -40,7 +40,7 @@ const InputModal: React.FC<TInputModalProps> = ({
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">{title}</label>
 
-      <div className="relative z-20 bg-transparent dark:bg-form-input">
+      <div className={`relative z-20 bg-transparent dark:bg-form-input ${bg}`}>
         <div
           onClick={!disabled ? onClick : undefined}
           className={`${textColorStyle} ${cursorStyle} min-h-12 w-full rounded ${borderColor} border-[1.5px] bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}

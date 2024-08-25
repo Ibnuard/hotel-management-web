@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import DropdownUser from './DropdownUser';
-import LogoIcon from '../../images/logo/logo-icon.svg';
+import LogoIcon from '../../images/logo.png';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -52,10 +52,14 @@ const Header = (props: {
             </span>
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
-
+          {/* 
           <Link className="block flex-shrink-0 lg:hidden" to="/">
-            <img src={LogoIcon} alt="Logo" />
-          </Link>
+            <img
+              src={LogoIcon}
+              alt="Logo"
+              className="w-40 h-10 object-center"
+            />
+          </Link> */}
         </div>
 
         <div className="hidden sm:block"></div>

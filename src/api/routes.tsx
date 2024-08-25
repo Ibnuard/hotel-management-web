@@ -37,3 +37,10 @@ export const DELETE_CHECKIN = (id: number, kamarId: number) =>
 export const GET_CHECKOUT_KAMAR = (page = 1, limit = 100, cari = '') =>
   `checkout/kamar?page=${page}&limit=${limit}&cari=${cari}`;
 export const GET_CHECKOUT_KAMAR_DETAIL = (id: number) => `checkout/kamar/${id}`;
+
+// ORDER
+export const GET_HISTORY = (page = 1, limit = 100, cari = '') =>
+  `order/history?page=${page}&limit=${limit}&cari=${cari}`;
+// CHECKOUT
+export const GET_CHECKOUT_TODAY = (page = 1, limit = 100, cari = '') =>
+  `order/checkout-today?page=${page}&limit=${limit}&cari=${cari}`;

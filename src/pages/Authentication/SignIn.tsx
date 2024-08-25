@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import useFetch from '../../hooks/useFetch';
 import { LOGIN } from '../../api/routes';
 import { API_STATES } from '../../common/Constants';
+import LogoIcon from '../../images/logo.png';
 
 const SignIn: React.FC = () => {
   const [userId, setUserId] = useState('');
@@ -43,8 +44,8 @@ const SignIn: React.FC = () => {
               <div className="grid place-items-center p-4 mb-4.5">
                 <div className="mb-8">
                   <img
-                    className="block h-40 w-40 object-contain"
-                    src={`https://cdn-icons-png.flaticon.com/512/5084/5084259.png`}
+                    className="block h-50 w-80 object-contain"
+                    src={LogoIcon}
                     alt="Logo"
                   />
                 </div>

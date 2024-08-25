@@ -13,7 +13,7 @@ import useFetch from '../../hooks/useFetch';
 import { GET_CHECKOUT_KAMAR_DETAIL } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 
-const CheckOutForm = () => {
+const HistoryDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -85,7 +85,7 @@ const CheckOutForm = () => {
     if (state == API_STATES.OK) {
       setType(MODAL_TYPE.SUCCESS);
       setOnConfirm(() => {
-        navigate('/order/history');
+        navigate('/order/checkout');
         toggle();
       });
     } else {
@@ -112,17 +112,6 @@ const CheckOutForm = () => {
             </div>
             <form action="#">
               <div className="p-6.5">
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    No. Invoice
-                  </label>
-                  <input
-                    disabled
-                    type="text"
-                    value={stateParameter.invoice_id}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
                 <InputModal
                   disabled
                   title="Tamu"
@@ -331,39 +320,27 @@ const CheckOutForm = () => {
                 </div>
                 <div className=" flex flex-row gap-x-4">
                   <Button
-                    onClick={() => {
-                      setType(MODAL_TYPE.CONFIRMATION);
-                      setOnConfirm(() => onCheckOut());
-                      toggle();
-                    }}
-                    color={'blue'}
-                    fullWidth
-                    className=" mt-8 normal-case"
-                  >
-                    Check Out
-                  </Button>
-                  <Button
                     onClick={() =>
                       navigate('/order/checkout/invoice', {
                         state: { ...stateParameter, order: orderDetail },
                       })
                     }
-                    color={'deep-orange'}
+                    color={'blue'}
                     fullWidth
                     className=" mt-8 normal-case"
                   >
                     Cetak Invoice
                   </Button>
+                  <Button
+                    onClick={() => navigate('/order/history')}
+                    variant={'outlined'}
+                    color={'red'}
+                    fullWidth
+                    className=" mt-8 normal-case"
+                  >
+                    Batalkan
+                  </Button>
                 </div>
-                <Button
-                  onClick={() => navigate('/order/checkout')}
-                  variant={'outlined'}
-                  color={'red'}
-                  fullWidth
-                  className=" mt-4 normal-case"
-                >
-                  Batalkan
-                </Button>
               </div>
             </div>
           </div>
@@ -373,4 +350,4 @@ const CheckOutForm = () => {
   );
 };
 
-export default CheckOutForm;
+export default HistoryDetails;

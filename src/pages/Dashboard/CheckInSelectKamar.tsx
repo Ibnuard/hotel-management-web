@@ -60,11 +60,23 @@ const CheckInSelectKamar = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-y-3 gap-x-8 sm:grid-cols-4">
-        {kamarReady.map((item, index) => {
-          return <KamarCard navTo="/order/checkin/form" stateData={item} />;
-        })}
-      </div>
+      {kamarReady.length > 0 ? (
+        <div className="grid grid-cols-1 gap-y-3 gap-x-8 sm:grid-cols-4">
+          {kamarReady.map((item, index) => {
+            return (
+              <KamarCard
+                key={index}
+                navTo="/order/checkin/form"
+                stateData={item}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center text-gray-500">
+          Tidak ada kamar yang tersedia.
+        </div>
+      )}
     </>
   );
 };

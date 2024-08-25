@@ -20,12 +20,15 @@ const CheckInSelectKamar = lazy(
 const CheckInForm = lazy(() => import('../pages/Dashboard/CheckInForm'));
 const CheckInEdit = lazy(() => import('../pages/Dashboard/CheckInEdit'));
 const Invoice = lazy(() => import('../pages/Dashboard/Invoice'));
+const History = lazy(() => import('../pages/Dashboard/History'));
+const HistoryDetails = lazy(() => import('../pages/Dashboard/HistoryDetails'));
 
 // Screen CheckIn
 const CheckOutSelectKamar = lazy(
   () => import('../pages/Dashboard/CheckOutSelectKamar'),
 );
 const CheckOutForm = lazy(() => import('../pages/Dashboard/CheckOutForm'));
+const CheckOutToday = lazy(() => import('../pages/Dashboard/CheckoutToday'));
 
 // Screen Admin
 const Kamar = lazy(() => import('../pages/Admin/Kamar'));
@@ -99,6 +102,15 @@ const Routes = () => {
             </Suspense>
           ),
         },
+        {
+          path: '/checkout-today',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Check Out')} />
+              <CheckOutToday />
+            </Suspense>
+          ),
+        },
       ],
     },
     {
@@ -136,6 +148,24 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Invoice')} />
               <Invoice />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/history',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Riwayat')} />
+              <History />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/history/details',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Riwayat')} />
+              <HistoryDetails />
             </Suspense>
           ),
         },
