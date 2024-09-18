@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://147.139.206.102/';
+export const BASE_URL = 'https://anggrekdev.my.id/';
 
 // KAMAR
 export const ADD_KAMAR = 'admin/add-kamar';
