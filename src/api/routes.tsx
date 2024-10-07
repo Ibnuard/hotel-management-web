@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://anggrekdev.my.id/';
+export const BASE_URL = 'http://localhost:8081/';
 
 // KAMAR
 export const ADD_KAMAR = 'admin/add-kamar';
@@ -51,3 +51,10 @@ export const UPDATE_SA = 'admin/update';
 // INVOICE
 export const SEND_INVOICE = (inv: string, receiver: string) =>
   `order/invoice/send?inv=${inv}&receiver=${receiver}`;
+
+// PRODUCT ADMIN
+export const ADD_PRODUCT = 'admin/product';
+export const EDIT_PRODUCT = (id: any) => `admin/product/${id}`;
+export const GET_ALL_PRODUCT = (page = 1, limit = 10, cari = '') =>
+  `admin/product?page=${page}&limit=${limit}&cari=${cari}`;
+export const DELETE_PRODUCT = (id: any) => `admin/product/${id}`;

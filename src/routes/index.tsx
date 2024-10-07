@@ -45,6 +45,17 @@ const TipeKamar = lazy(() => import('../pages/Admin/TipeKamar'));
 const TipeKamarDetails = lazy(() => import('../pages/Admin/TipeKamarDetails'));
 const TipeKamarInput = lazy(() => import('../pages/Admin/TipeKamarInput'));
 
+// Admin Layanan Kamar
+const LayananKamarAdm = lazy(() => import('../pages/Admin/LayananKamarAdm'));
+const LayananKamarAdmInput = lazy(
+  () => import('../pages/Admin/LayananKamarAdmInput'),
+);
+
+// Add On
+const ServiceSelectKamar = lazy(
+  () => import('../pages/Dashboard/ServiceSelectKamar'),
+);
+
 // setting
 const Settings = lazy(() => import('../pages/Setting/Settings'));
 
@@ -111,6 +122,15 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Check Out')} />
               <CheckOutToday />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/service',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Pilih Kamar')} />
+              <ServiceSelectKamar />
             </Suspense>
           ),
         },
@@ -263,6 +283,33 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Manajemen Tamu')} />
               <TipeKamarInput />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/layanan-kamar',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Layanan Kamar')} />
+              <LayananKamarAdm />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/layanan-kamar/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Layanan Kamar')} />
+              <LayananKamarAdmInput />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/layanan-kamar/input',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Layanan Kamar')} />
+              <LayananKamarAdmInput />
             </Suspense>
           ),
         },
