@@ -272,18 +272,29 @@ const CheckOutForm = () => {
                     Keterangan Layanan / Produk
                   </label>
                   <div className=" flex flex-col gap-y-2">
+                    <p className=" text-sm font-semibold">Biaya Kamar</p>
                     <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>Harga</Typography>
+                      <Typography variant={'small'}>
+                        Harga @ {orderDetail?.qty} Malam
+                      </Typography>
                       <Typography color={'black'} variant={'small'}>
                         {formatCurrency(String(orderDetail?.harga))}
                       </Typography>
                     </div>
-                    <div className=" flex flex-row justify-between">
-                      <Typography variant={'small'}>Qty</Typography>
-                      <Typography color={'black'} variant={'small'}>
-                        {orderDetail?.qty} Malam
-                      </Typography>
-                    </div>
+                    <p className=" text-sm font-semibold">Layanan Kamar</p>
+                    {orderDetail?.addOns?.map((item: any) => {
+                      return (
+                        <div className=" flex flex-row justify-between">
+                          <Typography variant={'small'}>
+                            {item.nama_product} x {item.qty} @{' '}
+                            {item.harga_product}
+                          </Typography>
+                          <Typography color={'black'} variant={'small'}>
+                            {formatCurrency(item.total_price)}
+                          </Typography>
+                        </div>
+                      );
+                    })}
                     <div className=" flex flex-row justify-between mb-2">
                       <Typography
                         className=" font-semibold text-boxdark-2"

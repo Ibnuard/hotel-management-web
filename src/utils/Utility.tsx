@@ -18,3 +18,15 @@ export const formatCurrency = (num: string) => {
   // Add the 'Rp ' prefix
   return `Rp ${formatted}`;
 };
+
+export const parseCurrency = (formatted: string) => {
+  if (!formatted) return '0';
+
+  // Remove the 'Rp ' prefix and any dot separators
+  let cleanNum = formatted.replace(/[Rp\s.]/g, '');
+
+  // If the cleaned number is empty, reset to "0"
+  if (cleanNum === '') cleanNum = '0';
+
+  return cleanNum;
+};

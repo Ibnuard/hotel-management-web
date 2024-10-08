@@ -63,11 +63,11 @@ const ServiceSelectKamar = () => {
 
       {kamarReady.length > 0 ? (
         <div className="grid grid-cols-1 gap-y-3 gap-x-8 sm:grid-cols-4">
-          {kamarReady.map((item, index) => {
+          {kamarReady.map((item: any, index) => {
             return (
               <CheckoutCard
                 key={index}
-                navTo="/order/checkout/form"
+                navTo={`/order/service/${item.id}`}
                 stateData={item}
               />
             );

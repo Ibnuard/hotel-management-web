@@ -248,7 +248,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              Tambah Layanan
+                              Layanan Kamar
                             </NavLink>
                           </li>
                           <li>

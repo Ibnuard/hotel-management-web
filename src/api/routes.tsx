@@ -58,3 +58,6 @@ export const EDIT_PRODUCT = (id: any) => `admin/product/${id}`;
 export const GET_ALL_PRODUCT = (page = 1, limit = 10, cari = '') =>
   `admin/product?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_PRODUCT = (id: any) => `admin/product/${id}`;
+
+// PRODUCT USER
+export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;

@@ -55,6 +55,7 @@ const LayananKamarAdmInput = lazy(
 const ServiceSelectKamar = lazy(
   () => import('../pages/Dashboard/ServiceSelectKamar'),
 );
+const ServiceDetail = lazy(() => import('../pages/Dashboard/ServiceForm'));
 
 // setting
 const Settings = lazy(() => import('../pages/Setting/Settings'));
@@ -125,15 +126,6 @@ const Routes = () => {
             </Suspense>
           ),
         },
-        {
-          path: '/order/service',
-          element: (
-            <Suspense fallback={<Loader />}>
-              <PageTitle title={getTitle('Pilih Kamar')} />
-              <ServiceSelectKamar />
-            </Suspense>
-          ),
-        },
       ],
     },
     {
@@ -189,6 +181,37 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Riwayat')} />
               <HistoryDetails />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
+  const routesService: routesTypes[] = [
+    {
+      path: '/',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/order/service',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Pilih Kamar')} />
+              <ServiceSelectKamar />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/order/service/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Layanan Kamar')} />
+              <ServiceDetail />
             </Suspense>
           ),
         },
@@ -361,6 +384,7 @@ const Routes = () => {
     ...routesAdmin,
     ...routesCheckout,
     ...routesSetting,
+    ...routesService,
   ]);
 
   return <RouterProvider router={router} />;

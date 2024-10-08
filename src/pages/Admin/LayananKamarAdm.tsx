@@ -102,7 +102,7 @@ const LayananKamarAdm = () => {
             </div>
             <div className="w-full md:w-72">
               <Input
-                label="Cari tipe kamar"
+                label="Cari produk atau layanan"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 value={cari}
                 onChange={(e) => setCari(e.target.value)}
