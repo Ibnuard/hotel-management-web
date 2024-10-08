@@ -59,5 +59,12 @@ export const GET_ALL_PRODUCT = (page = 1, limit = 10, cari = '') =>
   `admin/product?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_PRODUCT = (id: any) => `admin/product/${id}`;
 
+// PAKET AULA
+export const ADD_PAKET = 'aula/paket';
+export const EDIT_PAKET = (id: any) => `aula/paket/${id}`;
+export const GET_ALL_PAKET = (page = 1, limit = 10, cari = '') =>
+  `aula/paket?page=${page}&limit=${limit}&cari=${cari}`;
+export const DELETE_PAKET = (id: any) => `aula/paket/${id}`;
+
 // PRODUCT USER
 export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;

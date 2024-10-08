@@ -2,9 +2,12 @@ import { Button } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
+  ADD_PAKET,
   ADD_PRODUCT,
   ADD_TIPE_KAMAR,
+  DELETE_PAKET,
   DELETE_PRODUCT,
+  EDIT_PAKET,
   EDIT_PRODUCT,
 } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
@@ -13,9 +16,9 @@ import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
 import { formatCurrency } from '../../utils/Utility';
 
-const LayananKamarAdmInput = () => {
-  const [namaProduk, setNamaProduk] = useState<string>('');
-  const [hargaProduk, setHargaProduk] = useState<string>('');
+const PaketLayananAdmInput = () => {
+  const [namaPaket, setNamaPaket] = useState<string>('');
+  const [hargaPaket, setHargaPaket] = useState<string>('');
 
   // modal
   const { toggle, setType, setOnConfirm } = useModal();
@@ -26,17 +29,17 @@ const LayananKamarAdmInput = () => {
   const { id } = useParams();
 
   // button
-  const isButtonDisabled = !namaProduk || !hargaProduk;
+  const isButtonDisabled = !namaPaket || !hargaPaket;
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    setHargaProduk(formatCurrency(inputValue));
+    setHargaPaket(formatCurrency(inputValue));
   };
 
   useEffect(() => {
     if (id && locationState) {
-      setNamaProduk(locationState.nama_product);
-      setHargaProduk(locationState.harga_product);
+      setNamaPaket(locationState.nama_paket);
+      setHargaPaket(locationState.harga_paket);
     }
   }, [id]);
 
@@ -44,12 +47,12 @@ const LayananKamarAdmInput = () => {
     setType(MODAL_TYPE.LOADING);
 
     const body = {
-      nama: namaProduk,
-      harga: hargaProduk,
+      nama: namaPaket,
+      harga: hargaPaket,
     };
 
     const { state, data, error } = await useFetch({
-      url: ADD_PRODUCT,
+      url: ADD_PAKET,
       method: 'POST',
       data: body,
     });
@@ -70,12 +73,12 @@ const LayananKamarAdmInput = () => {
     setType(MODAL_TYPE.LOADING);
 
     const body = {
-      nama: namaProduk,
-      harga: hargaProduk,
+      nama: namaPaket,
+      harga: hargaPaket,
     };
 
     const { state, data, error } = await useFetch({
-      url: EDIT_PRODUCT(id),
+      url: EDIT_PAKET(id),
       method: 'POST',
       data: body,
     });
@@ -96,7 +99,7 @@ const LayananKamarAdmInput = () => {
     setType(MODAL_TYPE.LOADING);
 
     const { state, data, error } = await useFetch({
-      url: DELETE_PRODUCT(id),
+      url: DELETE_PAKET(id),
       method: 'DELETE',
     });
 
@@ -122,31 +125,31 @@ const LayananKamarAdmInput = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Data Produk
+                Data Paket
               </h3>
             </div>
             <form action="#">
               <div className="p-6.5">
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Nama Produk
+                    Nama Paket
                   </label>
                   <input
                     type="text"
-                    placeholder="Masukan nama produk"
-                    value={namaProduk}
-                    onChange={(e) => setNamaProduk(e.target.value)}
+                    placeholder="Masukan nama paket"
+                    value={namaPaket}
+                    onChange={(e) => setNamaPaket(e.target.value)}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Harga Produk
+                    Harga Paket
                   </label>
                   <input
                     type="text"
-                    placeholder="Masukan harga produk"
-                    value={hargaProduk}
+                    placeholder="Masukan harga paket"
+                    value={hargaPaket}
                     onChange={handleHargaChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
@@ -198,4 +201,4 @@ const LayananKamarAdmInput = () => {
   );
 };
 
-export default LayananKamarAdmInput;
+export default PaketLayananAdmInput;

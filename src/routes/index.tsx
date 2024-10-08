@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import Loader from '../common/Loader';
+import PaketLayananAdm from '../pages/Admin/PaketLayananAdm';
 
 // Auth
 const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
@@ -59,6 +60,12 @@ const ServiceDetail = lazy(() => import('../pages/Dashboard/ServiceForm'));
 
 // setting
 const Settings = lazy(() => import('../pages/Setting/Settings'));
+
+// Aula
+const AulaPaket = lazy(() => import('../pages/Admin/PaketLayananAdm'));
+const AulaPaketInput = lazy(
+  () => import('../pages/Admin/PaketLayananAdmInput'),
+);
 
 const Routes = () => {
   const { token } = useAuth();
@@ -212,6 +219,55 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Layanan Kamar')} />
               <ServiceDetail />
+            </Suspense>
+          ),
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
+  const routesAula: routesTypes[] = [
+    {
+      path: '/',
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/aula/sewa',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Pilih Kamar')} />
+              <ServiceSelectKamar />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/aula/paket',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Paket Makanan Aula')} />
+              <AulaPaket />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/aula/paket/input',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Paket Makanan Aula')} />
+              <AulaPaketInput />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/aula/paket/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Paket Makanan Aula')} />
+              <AulaPaketInput />
             </Suspense>
           ),
         },
@@ -385,6 +441,7 @@ const Routes = () => {
     ...routesCheckout,
     ...routesSetting,
     ...routesService,
+    ...routesAula,
   ]);
 
   return <RouterProvider router={router} />;
