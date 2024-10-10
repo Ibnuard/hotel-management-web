@@ -72,6 +72,7 @@ export const EDIT_SEWA_AULA = (id: any) => `aula/sewa/${id}`;
 export const GET_ALL_AULA = (page = 1, limit = 10, cari = '') =>
   `aula/sewa?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_AULA = (id: any) => `aula/sewa/${id}`;
+export const CHECK_AULA = 'aula/check';
 
 // PRODUCT USER
 export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;

@@ -1,5 +1,6 @@
 import { MODAL_TYPE } from '../../common/Constants';
 import { ConfirmationModal } from './ConfirmationModal';
+import { ErrorModal } from './ErrorModal';
 import { LoadingModal } from './LoadingModal';
 import { SuccessModal } from './SuccessModal';
 
@@ -32,6 +33,13 @@ export function ModalSelector({
     return (
       <SuccessModal visible={visible} toggle={toggle} onConfirm={onConfirm} />
     );
+  } else if (type == MODAL_TYPE.ERROR) {
+    <ErrorModal
+      message={message}
+      visible={visible}
+      toggle={toggle}
+      onConfirm={onConfirm}
+    />;
   }
 
   return <LoadingModal visible={visible} toggle={toggle} />;

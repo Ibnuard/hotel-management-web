@@ -11,14 +11,22 @@ type TModalErrorProps = {
   visible: boolean;
   toggle: () => void;
   onConfirm?: () => void;
+  message?: string;
 };
 
-export function ErrorModal({ visible, toggle, onConfirm }: TModalErrorProps) {
+export function ErrorModal({
+  visible,
+  toggle,
+  onConfirm,
+  message,
+}: TModalErrorProps) {
   return (
     <>
       <Dialog open={visible} size={'xs'} handler={toggle}>
         <DialogHeader>Gagal</DialogHeader>
-        <DialogBody>Ada sesuatu yang tidak beres. mohon coba lagi!</DialogBody>
+        <DialogBody>
+          {message || 'Ada sesuatu yang tidak beres. mohon coba lagi!'}
+        </DialogBody>
         <DialogFooter>
           <Button
             className=" w-full"
