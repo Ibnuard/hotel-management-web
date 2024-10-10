@@ -65,6 +65,7 @@ export const EDIT_PAKET = (id: any) => `aula/paket/${id}`;
 export const GET_ALL_PAKET = (page = 1, limit = 10, cari = '') =>
   `aula/paket?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_PAKET = (id: any) => `aula/paket/${id}`;
+export const GET_PAKET_BY_ID = (id: any) => `aula/paket/${id}`;
 
 // PAKET AULA
 export const SEWA_AULA = 'aula/sewa';
@@ -73,6 +74,7 @@ export const GET_ALL_AULA = (page = 1, limit = 10, cari = '') =>
   `aula/sewa?page=${page}&limit=${limit}&cari=${cari}`;
 export const DELETE_AULA = (id: any) => `aula/sewa/${id}`;
 export const CHECK_AULA = 'aula/check';
+export const GET_AULA_PRICE = 'aula/price';
 
 // PRODUCT USER
 export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;

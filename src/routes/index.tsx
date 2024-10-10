@@ -257,6 +257,15 @@ const Routes = () => {
           ),
         },
         {
+          path: '/aula/sewa/form/:id',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Sewa Aula')} />
+              <AulaForm />
+            </Suspense>
+          ),
+        },
+        {
           path: '/aula/paket',
           element: (
             <Suspense fallback={<Loader />}>

@@ -27,3 +27,14 @@ export function isStartDateAfterEndDate(
   // Check if startDate is after endDate
   return start.isAfter(end);
 }
+
+export function getDayDiff(tanggalMulai: string, tanggalSelesai: string) {
+  // Parse tanggal dengan format YYYY-MM-DD
+  const mulai = moment(tanggalMulai, 'YYYY-MM-DD');
+  const selesai = moment(tanggalSelesai, 'YYYY-MM-DD');
+
+  // Hitung selisih hari
+  const lamaHari = selesai.diff(mulai, 'days');
+
+  return lamaHari;
+}

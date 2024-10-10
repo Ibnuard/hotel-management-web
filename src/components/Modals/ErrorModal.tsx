@@ -32,10 +32,7 @@ export function ErrorModal({
             className=" w-full"
             variant={'filled'}
             color={'red'}
-            onClick={() => {
-              toggle();
-              onConfirm ? onConfirm() : null;
-            }}
+            onClick={onConfirm}
           >
             <span>OK</span>
           </Button>

@@ -19,11 +19,13 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
-import { GET_ALL_PAKET, GET_ALL_PRODUCT } from '../../api/routes';
+import { GET_ALL_AULA, GET_ALL_PAKET, GET_ALL_PRODUCT } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
+import { formatCurrency } from '../../utils/Utility';
+import { getDayDiff } from '../../utils/DateUtils';
 
-const TABLE_HEAD = ['Nama Paket', 'Harga Paket', ''];
+const TABLE_HEAD = ['Nama Penyewa', 'Tanggal Sewa', 'Total Biaya', ''];
 
 const Aula = () => {
   // state
@@ -47,7 +49,7 @@ const Aula = () => {
     toggle();
 
     const { state, data, error } = await useFetch({
-      url: GET_ALL_PAKET(page, 5, cari),
+      url: GET_ALL_AULA(page, 5, cari),
       method: 'GET',
     });
 
@@ -62,7 +64,7 @@ const Aula = () => {
   }
 
   function onEditData(item: any) {
-    navigate(`/aula/paket/${item.id}`, { state: item });
+    navigate(`/aula/sewa/form/${item.id}`, { state: item });
   }
 
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -131,14 +133,14 @@ const Aula = () => {
                 </tr>
               </thead>
               <tbody>
-                {list?.map(({ id, nama_paket, harga_paket }, index) => {
+                {list?.map((item: any, index) => {
                   const isLast = index === list.length - 1;
                   const classes = isLast
                     ? 'p-4'
                     : 'p-4 border-b border-blue-gray-50';
 
                   return (
-                    <tr key={id}>
+                    <tr key={item.id}>
                       <td className={classes}>
                         <div className="flex items-center gap-3">
                           <div className="flex flex-col">
@@ -147,7 +149,7 @@ const Aula = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {nama_paket}
+                              {item.nama_penyewa}
                             </Typography>
                           </div>
                         </div>
@@ -160,7 +162,25 @@ const Aula = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {harga_paket}
+                              {item.tgl_awal_sewa} sd {item.tgl_akhir_sewa} (
+                              {getDayDiff(
+                                item.tgl_awal_sewa,
+                                item.tgl_akhir_sewa,
+                              )}{' '}
+                              hari )
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {formatCurrency(item.total_harga)}
                             </Typography>
                           </div>
                         </div>

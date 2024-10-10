@@ -34,12 +34,14 @@ export function ModalSelector({
       <SuccessModal visible={visible} toggle={toggle} onConfirm={onConfirm} />
     );
   } else if (type == MODAL_TYPE.ERROR) {
-    <ErrorModal
-      message={message}
-      visible={visible}
-      toggle={toggle}
-      onConfirm={onConfirm}
-    />;
+    return (
+      <ErrorModal
+        message={message}
+        visible={visible}
+        toggle={toggle}
+        onConfirm={onConfirm}
+      />
+    );
   }
 
   return <LoadingModal visible={visible} toggle={toggle} />;
