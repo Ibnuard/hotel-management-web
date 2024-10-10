@@ -25,7 +25,13 @@ import { useModal } from '../../components/Provider/ModalProvider';
 import { formatCurrency } from '../../utils/Utility';
 import { getDayDiff } from '../../utils/DateUtils';
 
-const TABLE_HEAD = ['Nama Penyewa', 'Tanggal Sewa', 'Total Biaya', ''];
+const TABLE_HEAD = [
+  'Nama Penyewa',
+  'Tanggal Sewa',
+  'Lama Sewa',
+  'Total Biaya',
+  '',
+];
 
 const Aula = () => {
   // state
@@ -162,12 +168,24 @@ const Aula = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {item.tgl_awal_sewa} sd {item.tgl_akhir_sewa} (
+                              {item.tgl_awal_sewa} sd. {item.tgl_akhir_sewa}
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
                               {getDayDiff(
                                 item.tgl_awal_sewa,
                                 item.tgl_akhir_sewa,
                               )}{' '}
-                              hari )
+                              Hari
                             </Typography>
                           </div>
                         </div>
