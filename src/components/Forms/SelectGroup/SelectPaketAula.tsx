@@ -8,9 +8,10 @@ import { formatCurrency } from '../../../utils/Utility';
 type TProps = {
   value: string | undefined;
   setValue: (val: string) => void;
+  disabled?: boolean;
 };
 
-const SelectPaketAula: React.FC<TProps> = ({ value, setValue }) => {
+const SelectPaketAula: React.FC<TProps> = ({ value, setValue, disabled }) => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
   const [list, setList] = useState([]);
 
@@ -44,6 +45,7 @@ const SelectPaketAula: React.FC<TProps> = ({ value, setValue }) => {
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
           value={value}
+          disabled={disabled}
           onChange={(e) => {
             setValue(e.target.value);
             changeTextColor();
@@ -64,9 +66,11 @@ const SelectPaketAula: React.FC<TProps> = ({ value, setValue }) => {
           })}
         </select>
 
-        <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-          <ChevronDownIcon className=" size-6" />
-        </span>
+        {!disabled && (
+          <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+            <ChevronDownIcon className=" size-6" />
+          </span>
+        )}
       </div>
     </div>
   );

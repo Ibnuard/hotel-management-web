@@ -9,6 +9,7 @@ import {
   ArrowsUpDownIcon,
   FingerPrintIcon,
   UserCircleIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -292,7 +293,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FingerPrintIcon className=" size-6" />
+                        <BuildingLibraryIcon className=" size-6" />
                         Aula
                         <ChevronDownIcon
                           className={` size-5 absolute right-4 top-1/2 -translate-y-1/2 ${
@@ -417,6 +418,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               }
                             >
                               Buku Tamu
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/admin/rentprice"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Aula
                             </NavLink>
                           </li>
                         </ul>

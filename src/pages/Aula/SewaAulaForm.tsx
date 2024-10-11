@@ -2,6 +2,7 @@ import { Button } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
+  AULA_STATUS,
   CHECK_AULA,
   CREATE_CHECKIN,
   DELETE_AULA,
@@ -15,7 +16,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
-import SelectPaketAula from '../../components/Forms/SelectGroup/SelectPaketAUla';
+import SelectPaketAula from '../../components/Forms/SelectGroup/SelectPaketAula';
 import { getDayDiff, isStartDateAfterEndDate } from '../../utils/DateUtils';
 import { formatCurrency, parseCurrency } from '../../utils/Utility';
 
@@ -31,6 +32,7 @@ const SewaAulaForm = () => {
 
   // user
   const [name, setName] = useState<string | undefined>('');
+  const [email, setEmail] = useState<string | undefined>('');
   const [phone, setPhone] = useState<string | undefined>('');
   const [ktp, setKTP] = useState<string | undefined>('');
   const [alamat, setAlamat] = useState<string | undefined>('');
@@ -42,6 +44,8 @@ const SewaAulaForm = () => {
   const [aulaPrice, setAulaPrice] = useState<string>('');
   const [isNeedCheck, setIsNeedCheck] = useState<boolean>(false);
   const [harga, setHarga] = useState<string>('');
+
+  const [aulaStatus, setAulaStatus] = useState<string>('');
 
   // modal
   const { setType, toggle, setOnConfirm, setMessage } = useModal();
@@ -129,6 +133,7 @@ const SewaAulaForm = () => {
       setTanggalCO(prev.tgl_akhir_sewa);
 
       setName(prev.penyewa.name);
+      setEmail(prev.penyewa.email || '');
       setPhone(prev.penyewa.phone);
       setKTP(prev.penyewa.ktp);
       setAlamat(prev.penyewa.address);
@@ -148,6 +153,7 @@ const SewaAulaForm = () => {
 
   useEffect(() => {
     getAulaPrice();
+    getAulaStatus();
   }, []);
 
   async function getPaketDetail() {
@@ -184,7 +190,7 @@ const SewaAulaForm = () => {
 
       if (state == API_STATES.OK) {
         toggle();
-        setAulaPrice(data.aula_price);
+        setAulaPrice(id ? locationState.harga_aula : data.aula_price);
         if (id) {
           setPax(locationState.jumlah_pax);
         } else {
@@ -199,12 +205,52 @@ const SewaAulaForm = () => {
     }
   }
 
+  async function getAulaStatus() {
+    try {
+      const { state, data, error } = await useFetch({
+        url: AULA_STATUS(id),
+        method: 'GET',
+      });
+
+      if (state == API_STATES.OK) {
+        setAulaStatus(data.status);
+      }
+    } catch (error) {}
+  }
+
+  async function onUpdateAulaStatus() {
+    setType(MODAL_TYPE.LOADING);
+
+    try {
+      const { state, data, error } = await useFetch({
+        url: AULA_STATUS(id),
+        method: 'POST',
+      });
+
+      if (state == API_STATES.OK) {
+        setType(MODAL_TYPE.SUCCESS);
+        setOnConfirm(() => {
+          toggle();
+          getAulaStatus();
+        });
+      }
+    } catch (error) {
+      setType(MODAL_TYPE.ERROR);
+      setOnConfirm(() => {
+        toggle();
+      });
+    }
+  }
+
+  console.log('AULA STATUS', aulaStatus);
+
   async function onSewaAula() {
     setType(MODAL_TYPE.LOADING);
 
     const body = {
       penyewa: {
         name: name,
+        email: email,
         phone: phone,
         ktp: ktp,
         address: alamat,
@@ -318,6 +364,7 @@ const SewaAulaForm = () => {
                           selector="checkin-date"
                           title="Tanggal Sewa Awal"
                           value={tanggalCI}
+                          disabled={aulaStatus == 'DONE'}
                           onChange={(val: string) => {
                             clearState();
                             setTanggalCI(val);
@@ -329,6 +376,7 @@ const SewaAulaForm = () => {
                           selector="checkout-date"
                           title="Tanggal Sewa Akhir"
                           value={tanggalCO}
+                          disabled={aulaStatus == 'DONE'}
                           onChange={(val: string) => {
                             clearState();
                             setTanggalCO(val);
@@ -336,6 +384,7 @@ const SewaAulaForm = () => {
                         />
                       </div>
                     </div>
+
                     {!id ? (
                       <Button
                         onClick={() => {
@@ -378,6 +427,7 @@ const SewaAulaForm = () => {
                       <input
                         type="text"
                         placeholder="Masukan nama penyewa"
+                        disabled={aulaStatus == 'DONE'}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         onChange={(e) => setName(e.target.value)}
                         value={name}
@@ -390,6 +440,7 @@ const SewaAulaForm = () => {
                       </label>
                       <input
                         type="number"
+                        disabled={aulaStatus == 'DONE'}
                         placeholder="Masukan nomor telp penyewa"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         onChange={(e) => setPhone(e.target.value)}
@@ -403,10 +454,24 @@ const SewaAulaForm = () => {
                       </label>
                       <input
                         type="number"
+                        disabled={aulaStatus == 'DONE'}
                         placeholder="Masukan nomor ktp penyewa"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         onChange={(e) => setKTP(e.target.value)}
                         value={ktp}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Email ( Opsional )
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Masukan email"
+                        disabled={aulaStatus == 'DONE'}
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
                       />
                     </div>
                     <div className="w-full">
@@ -416,6 +481,7 @@ const SewaAulaForm = () => {
                       <textarea
                         rows={2}
                         placeholder="Masukan alamat"
+                        disabled={aulaStatus == 'DONE'}
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         onChange={(e) => setAlamat(e.target.value)}
                         value={alamat}
@@ -438,7 +504,11 @@ const SewaAulaForm = () => {
               </div>
               <form action="#">
                 <div className="p-6.5">
-                  <SelectPaketAula value={paket} setValue={setPaket} />
+                  <SelectPaketAula
+                    disabled={aulaStatus == 'DONE'}
+                    value={paket}
+                    setValue={setPaket}
+                  />
 
                   <div className=" flex flex-col gap-4.5">
                     <div className="w-full">
@@ -447,6 +517,7 @@ const SewaAulaForm = () => {
                       </label>
                       <input
                         type="number"
+                        disabled={aulaStatus == 'DONE'}
                         placeholder="Masukan jumlah pax"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         onChange={(e) => setPax(e.target.value)}
@@ -461,6 +532,7 @@ const SewaAulaForm = () => {
                         </label>
                         <input
                           type="text"
+                          disabled={aulaStatus == 'DONE'}
                           placeholder="Masukan total harga paket"
                           value={harga}
                           onChange={handleHargaChange}
@@ -512,22 +584,41 @@ const SewaAulaForm = () => {
                       </p>
                     </div>
                   </div>
-                  <div className=" flex flex-row gap-x-4">
-                    <Button
-                      onClick={() => {
-                        setType(MODAL_TYPE.CONFIRMATION);
-                        setOnConfirm(() => onSewaAula());
-                        toggle();
-                      }}
-                      disabled={isFullfilled}
-                      color={'blue'}
-                      fullWidth
-                      className=" mt-8 normal-case"
-                    >
-                      {id ? 'Update Data' : 'Sewa Aula'}
-                    </Button>
 
-                    {id && (
+                  <div className=" flex flex-row gap-x-4">
+                    {id && aulaStatus == 'BOOKED' && (
+                      <Button
+                        onClick={() => {
+                          setType(MODAL_TYPE.CONFIRMATION);
+                          setOnConfirm(() => onSewaAula());
+                          toggle();
+                        }}
+                        disabled={isFullfilled}
+                        color={'blue'}
+                        fullWidth
+                        className=" mt-8 normal-case"
+                      >
+                        Update Data
+                      </Button>
+                    )}
+
+                    {!id && (
+                      <Button
+                        onClick={() => {
+                          setType(MODAL_TYPE.CONFIRMATION);
+                          setOnConfirm(() => onSewaAula());
+                          toggle();
+                        }}
+                        disabled={isFullfilled}
+                        color={'blue'}
+                        fullWidth
+                        className=" mt-8 normal-case"
+                      >
+                        Sewa Aula
+                      </Button>
+                    )}
+
+                    {id && aulaStatus == 'BOOKED' && (
                       <Button
                         onClick={() => {
                           setType(MODAL_TYPE.CONFIRMATION);
@@ -539,6 +630,52 @@ const SewaAulaForm = () => {
                         className=" mt-8 normal-case"
                       >
                         Hapus Data
+                      </Button>
+                    )}
+                  </div>
+                  <div>
+                    {id && (
+                      <Button
+                        onClick={() => {
+                          setType(MODAL_TYPE.CONFIRMATION);
+                          setOnConfirm(() => onUpdateAulaStatus());
+                          toggle();
+                        }}
+                        disabled={aulaStatus == 'DONE'}
+                        color={'blue'}
+                        fullWidth
+                        variant={'outlined'}
+                        className={`${
+                          aulaStatus == 'BOOKED' ? 'mt-4' : 'mt-8'
+                        } normal-case`}
+                      >
+                        {aulaStatus == 'BOOKED' ? 'Selesaikan Sewa' : 'Selesai'}
+                      </Button>
+                    )}
+
+                    {aulaStatus == 'DONE' && (
+                      <Button
+                        onClick={() =>
+                          navigate('/aula/invoice', {
+                            state: {
+                              ...locationState,
+                              price_detail: {
+                                aulaPrice: aulaPrice,
+                                totalAulaPrice: totalAulaPrice,
+                                totalPaketPrice: paketTotal,
+                                totalPPN: totalPPN,
+                                grandTotal: grandTotal,
+                                totalDays: getDayDiff(tanggalCI, tanggalCO),
+                              },
+                            },
+                          })
+                        }
+                        disabled={isFullfilled}
+                        color={'blue'}
+                        fullWidth
+                        className=" mt-4 normal-case"
+                      >
+                        Download Invoice
                       </Button>
                     )}
                   </div>

@@ -69,6 +69,8 @@ const AulaPaketInput = lazy(
 // Aula Sewa
 const Aula = lazy(() => import('../pages/Aula/Aula'));
 const AulaForm = lazy(() => import('../pages/Aula/SewaAulaForm'));
+const AulaInvoice = lazy(() => import('../pages/Aula/AulaInvoice'));
+const AulaPriceInput = lazy(() => import('../pages/Admin/AulaPriceInput'));
 
 const Routes = () => {
   const { token } = useAuth();
@@ -257,6 +259,15 @@ const Routes = () => {
           ),
         },
         {
+          path: '/aula/invoice',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Invoice')} />
+              <AulaInvoice />
+            </Suspense>
+          ),
+        },
+        {
           path: '/aula/sewa/form/:id',
           element: (
             <Suspense fallback={<Loader />}>
@@ -410,6 +421,15 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Layanan Kamar')} />
               <LayananKamarAdmInput />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/rentprice',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Manajemen Aula')} />
+              <AulaPriceInput />
             </Suspense>
           ),
         },

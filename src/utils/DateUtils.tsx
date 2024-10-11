@@ -36,5 +36,5 @@ export function getDayDiff(tanggalMulai: string, tanggalSelesai: string) {
   // Hitung selisih hari
   const lamaHari = selesai.diff(mulai, 'days');
 
-  return lamaHari;
+  return lamaHari + 1;
 }

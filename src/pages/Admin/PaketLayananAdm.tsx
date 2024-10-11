@@ -166,14 +166,18 @@ const PaketLayananAdm = () => {
                         </div>
                       </td>
                       <td className={classes}>
-                        <Tooltip content="Edit">
-                          <IconButton
-                            variant="text"
-                            onClick={() => onEditData(list[index])}
-                          >
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
+                        {id !== 1 ? (
+                          <Tooltip content="Edit">
+                            <IconButton
+                              variant="text"
+                              onClick={() => onEditData(list[index])}
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <div></div>
+                        )}
                       </td>
                     </tr>
                   );

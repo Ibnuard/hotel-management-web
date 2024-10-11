@@ -1,5 +1,5 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
   BuildingOfficeIcon,
   PencilIcon,
@@ -204,12 +204,12 @@ const Aula = () => {
                         </div>
                       </td>
                       <td className={classes}>
-                        <Tooltip content="Edit">
+                        <Tooltip content="Detail">
                           <IconButton
                             variant="text"
                             onClick={() => onEditData(list[index])}
                           >
-                            <PencilIcon className="h-4 w-4" />
+                            <DocumentIcon className="h-4 w-4" />
                           </IconButton>
                         </Tooltip>
                       </td>

@@ -75,6 +75,7 @@ export const GET_ALL_AULA = (page = 1, limit = 10, cari = '') =>
 export const DELETE_AULA = (id: any) => `aula/sewa/${id}`;
 export const CHECK_AULA = 'aula/check';
 export const GET_AULA_PRICE = 'aula/price';
+export const AULA_STATUS = (id: any) => `aula/status/${id}`;
 
 // PRODUCT USER
 export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;
