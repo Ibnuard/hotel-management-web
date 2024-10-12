@@ -41,7 +41,9 @@ const Invoice: React.FC = () => {
       nama_product: `Kamar ${getNamaKamar(KAMAR_DATA)}`,
       harga_product: KAMAR_DATA.harga,
     },
-    ...stateParam.order.addOns,
+    ...(stateParam.order?.addOns && stateParam.order.addOns.length > 0
+      ? stateParam.order.addOns
+      : []),
     {
       id: 123456789,
       qty: 1,
