@@ -19,6 +19,8 @@ const Invoice: React.FC = () => {
   const navigate = useNavigate();
   const stateParam = location.state;
 
+  console.log(stateParam);
+
   const { setType, toggle, setOnConfirm } = useModal();
 
   const TAMU_DATA = stateParam?.tamu;
@@ -50,6 +52,17 @@ const Invoice: React.FC = () => {
       total_price: stateParam.order.ppn,
       nama_product: `PPN 11%`,
       harga_product: formatCurrency(stateParam.order.ppn),
+    },
+    {
+      id: 12345678910,
+      qty: 1,
+      total_price: stateParam?.jumlah_deposit
+        ? stateParam?.jumlah_deposit
+        : 'Rp. 0',
+      nama_product: `Deposit`,
+      harga_product: stateParam?.jumlah_deposit
+        ? stateParam?.jumlah_deposit
+        : 'Rp. 0',
     },
   ];
 
