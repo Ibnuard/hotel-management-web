@@ -31,13 +31,7 @@ const KamarDetails = () => {
 
   // button
   const isButtonDisabled =
-    !namaKamar ||
-    !nomorKamar ||
-    !tipeKamar ||
-    !maxDewasa ||
-    !maxAnak ||
-    !ketersediaan ||
-    !harga;
+    !namaKamar || !nomorKamar || !tipeKamar || !ketersediaan || !harga;
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;

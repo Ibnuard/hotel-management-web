@@ -39,8 +39,10 @@ const TipeKamarInput = () => {
         toggle();
       });
     } else {
+      setOnConfirm(() => {
+        toggle();
+      });
       setType(MODAL_TYPE.ERROR);
-      setOnConfirm(() => {});
     }
   }
 
