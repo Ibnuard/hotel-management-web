@@ -43,13 +43,6 @@ const AulaInvoice: React.FC = () => {
           ? stateParam.price_detail.totalPaketPrice
           : stateParam.paket.harga_paket,
     },
-    {
-      id: 2,
-      qty: 1,
-      total_price: stateParam.price_detail.totalPPN,
-      nama_product: 'PPN 11%',
-      harga_product: stateParam.price_detail.totalPPN,
-    },
   ];
 
   console.log('DATA', stateParam);

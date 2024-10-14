@@ -84,8 +84,7 @@ const SewaAulaForm = () => {
       : parseInt(parseCurrency(paketDetail?.harga_paket || 0)) *
         parseInt(pax || '0');
   const totalAulaPrice = parseInt(aulaPrice) * getDayDiff(tanggalCI, tanggalCO);
-  const totalPPN = ((paketTotal + totalAulaPrice) * 11) / 100;
-  const grandTotal = paketTotal + totalAulaPrice + totalPPN;
+  const grandTotal = paketTotal + totalAulaPrice;
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -570,12 +569,6 @@ const SewaAulaForm = () => {
                       </p>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <p className=" text-sm text-body">PPN 11%</p>
-                      <p className=" text-sm font-semibold text-black">
-                        {formatCurrency(String(totalPPN))}
-                      </p>
-                    </div>
-                    <div className="flex flex-row justify-between">
                       <p className=" text-sm text-black font-semibold">
                         Grand Total
                       </p>
@@ -663,7 +656,6 @@ const SewaAulaForm = () => {
                                 aulaPrice: aulaPrice,
                                 totalAulaPrice: totalAulaPrice,
                                 totalPaketPrice: paketTotal,
-                                totalPPN: totalPPN,
                                 grandTotal: grandTotal,
                                 totalDays: getDayDiff(tanggalCI, tanggalCO),
                               },
