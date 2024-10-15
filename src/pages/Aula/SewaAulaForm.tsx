@@ -1,14 +1,18 @@
-import { Button } from '@material-tailwind/react';
+import {
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemSuffix,
+} from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   AULA_STATUS,
   CHECK_AULA,
-  CREATE_CHECKIN,
   DELETE_AULA,
   EDIT_SEWA_AULA,
   GET_AULA_PRICE,
-  GET_PAKET_BY_ID,
   SEWA_AULA,
 } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
@@ -16,9 +20,10 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import { useModal } from '../../components/Provider/ModalProvider';
 import useFetch from '../../hooks/useFetch';
-import SelectPaketAula from '../../components/Forms/SelectGroup/SelectPaketAula';
 import { getDayDiff, isStartDateAfterEndDate } from '../../utils/DateUtils';
 import { formatCurrency, parseCurrency } from '../../utils/Utility';
+import PaketAulaModal from '../../components/Modals/PaketAulaModal';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 const SewaAulaForm = () => {
   const navigate = useNavigate();
@@ -37,7 +42,6 @@ const SewaAulaForm = () => {
   const [ktp, setKTP] = useState<string | undefined>('');
   const [alamat, setAlamat] = useState<string | undefined>('');
 
-  const [paketDetail, setPaketDetail] = useState<any>();
   const [paket, setPaket] = useState<string | undefined>('');
   const [pax, setPax] = useState<string>('');
 
@@ -46,6 +50,11 @@ const SewaAulaForm = () => {
   const [harga, setHarga] = useState<string>('');
 
   const [aulaStatus, setAulaStatus] = useState<string>('');
+
+  // paket aula modal
+  const [showPaket, setShowPaket] = useState<boolean>(false);
+  const [selectedPaket, setSelectedPaket] = useState<any>([]);
+  const [totalPaket, setTotalPaket] = useState<any>('');
 
   // modal
   const { setType, toggle, setOnConfirm, setMessage } = useModal();
@@ -58,33 +67,18 @@ const SewaAulaForm = () => {
     return false;
   };
 
-  const buttonIsPrasmanan = () => {
-    if (paket == '1') {
-      return !harga;
-    }
-
-    return false;
-  };
-
   const isFullfilled =
     !name ||
     !phone ||
     !ktp ||
     !alamat ||
-    !paket ||
     !pax ||
-    !paketDetail ||
-    buttonIsPrasmanan() ||
+    !selectedPaket ||
     buttonIsUpdatedReady();
 
   // Price Total
-  const paketTotal =
-    paket == '1'
-      ? parseInt(parseCurrency(harga))
-      : parseInt(parseCurrency(paketDetail?.harga_paket || 0)) *
-        parseInt(pax || '0');
   const totalAulaPrice = parseInt(aulaPrice) * getDayDiff(tanggalCI, tanggalCO);
-  const grandTotal = paketTotal + totalAulaPrice;
+  const grandTotal = totalPaket + totalAulaPrice;
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -136,8 +130,7 @@ const SewaAulaForm = () => {
       setPhone(prev.penyewa.phone);
       setKTP(prev.penyewa.ktp);
       setAlamat(prev.penyewa.address);
-
-      setPaket(prev.paket.id);
+      setSelectedPaket(prev.paket_list);
       setPax(prev.jumlah_pax);
 
       setHarga(formatCurrency(prev.harga_paket));
@@ -147,35 +140,9 @@ const SewaAulaForm = () => {
   }, [id]);
 
   useEffect(() => {
-    getPaketDetail();
-  }, [paket]);
-
-  useEffect(() => {
     getAulaPrice();
     getAulaStatus();
   }, []);
-
-  async function getPaketDetail() {
-    setType(MODAL_TYPE.LOADING);
-    toggle();
-
-    try {
-      const { state, data, error } = await useFetch({
-        url: GET_PAKET_BY_ID(paket),
-        method: 'GET',
-      });
-
-      if (state == API_STATES.OK) {
-        toggle();
-        setPaketDetail(data);
-      }
-    } catch (error) {
-      setType(MODAL_TYPE.ERROR);
-      setOnConfirm(() => {
-        toggle();
-      });
-    }
-  }
 
   async function getAulaPrice() {
     setType(MODAL_TYPE.LOADING);
@@ -256,12 +223,8 @@ const SewaAulaForm = () => {
       },
       tgl_awal_sewa: tanggalCI,
       tgl_akhir_sewa: tanggalCO,
-      paket_id: paket,
+      paket_list: selectedPaket,
       jumlah_pax: pax,
-      harga_paket:
-        paket == '1'
-          ? parseCurrency(harga)
-          : parseCurrency(paketDetail.harga_paket),
     };
 
     try {
@@ -334,6 +297,52 @@ const SewaAulaForm = () => {
     setPaket('');
     setPax('');
   }
+
+  function onAddNewPaket(paket: any) {
+    const extSelected = [...selectedPaket];
+    extSelected.push(paket);
+
+    setSelectedPaket(extSelected);
+  }
+
+  function onRemovePaket(id: number) {
+    const extSelected = [...selectedPaket];
+    const rmSelected = extSelected.filter((item) => item.id !== id);
+
+    setSelectedPaket(rmSelected);
+    setType(MODAL_TYPE.SUCCESS);
+    setOnConfirm(() => toggle());
+  }
+
+  useEffect(() => {
+    if (selectedPaket) {
+      const ext = [...selectedPaket];
+      const filtered = ext.filter((item) => item.id !== 1);
+      const mapFormated = filtered.map((item) => {
+        return {
+          ...item,
+          harga_paket:
+            parseInt(parseCurrency(item.harga_paket)) * parseInt(pax),
+        };
+      });
+
+      const isHasPrasmanan = ext.find((item) => item.id == 1);
+
+      const extTotalPaket = mapFormated.reduce(
+        (acc, item) => acc + item.harga_paket,
+        0,
+      );
+
+      if (isHasPrasmanan) {
+        const hargaPrasmanan = parseCurrency(isHasPrasmanan.harga_paket);
+        const totalFinal = parseInt(extTotalPaket) + parseInt(hargaPrasmanan);
+
+        setTotalPaket(totalFinal);
+      } else {
+        setTotalPaket(extTotalPaket);
+      }
+    }
+  }, [selectedPaket, pax]);
 
   return (
     <>
@@ -501,13 +510,13 @@ const SewaAulaForm = () => {
                   Paket Penyewaan Aula
                 </h3>
               </div>
-              <form action="#">
+              <div>
                 <div className="p-6.5">
-                  <SelectPaketAula
+                  {/* <SelectPaketAula
                     disabled={aulaStatus == 'DONE'}
                     value={paket}
                     setValue={setPaket}
-                  />
+                  /> */}
 
                   <div className=" flex flex-col gap-4.5">
                     <div className="w-full">
@@ -523,6 +532,67 @@ const SewaAulaForm = () => {
                         value={pax}
                       />
                     </div>
+
+                    <div className="w-full rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                      <div className="flex flex-row items-center justify-between border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                        <h3 className="font-medium text-black dark:text-white">
+                          Paket Aula
+                        </h3>
+                        {aulaStatus !== 'DONE' && (
+                          <Button
+                            color={'blue'}
+                            size={'sm'}
+                            className=" normal-case"
+                            onClick={() => setShowPaket(!showPaket)}
+                          >
+                            Tambah
+                          </Button>
+                        )}
+                      </div>
+                      {selectedPaket.length == 0 ? (
+                        <div className=" w-full h-36 flex items-center justify-center">
+                          <p className=" text-sm text-body">
+                            Belum ada paket dipilih.
+                          </p>
+                        </div>
+                      ) : (
+                        <List>
+                          {selectedPaket.map((item: any, index: number) => {
+                            return (
+                              <ListItem
+                                ripple={false}
+                                className="py-1 pr-1 pl-4 text-sm"
+                              >
+                                {item.nama_paket} @ {item.harga_paket}
+                                {aulaStatus !== 'DONE' && (
+                                  <ListItemSuffix>
+                                    <IconButton
+                                      onClick={() => {
+                                        setType(MODAL_TYPE.CONFIRMATION);
+                                        setOnConfirm(() =>
+                                          onRemovePaket(item.id),
+                                        );
+                                        toggle();
+                                      }}
+                                      variant="text"
+                                      color="blue-gray"
+                                    >
+                                      <TrashIcon className=" size-5 text-red-400" />
+                                    </IconButton>
+                                  </ListItemSuffix>
+                                )}
+                              </ListItem>
+                            );
+                          })}
+                        </List>
+                      )}
+                    </div>
+
+                    {selectedPaket.length > 0 && (
+                      <p className=" font-semibold text-sm mt-4.5">
+                        Total Harga Paket: {formatCurrency(totalPaket)}
+                      </p>
+                    )}
 
                     {paket == '1' && (
                       <div className="w-full">
@@ -541,7 +611,7 @@ const SewaAulaForm = () => {
                     )}
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
 
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -550,7 +620,7 @@ const SewaAulaForm = () => {
                   Detail Penyewaan Aula
                 </h3>
               </div>
-              <form action="#">
+              <div>
                 <div className="p-6.5">
                   <div className=" flex flex-col gap-4">
                     <div className="flex flex-row justify-between">
@@ -565,7 +635,7 @@ const SewaAulaForm = () => {
                     <div className="flex flex-row justify-between">
                       <p className=" text-sm text-body">Total Harga Paket</p>
                       <p className=" text-sm font-semibold text-black">
-                        {formatCurrency(String(paketTotal))}
+                        {formatCurrency(totalPaket)}
                       </p>
                     </div>
                     <div className="flex flex-row justify-between">
@@ -655,7 +725,8 @@ const SewaAulaForm = () => {
                               price_detail: {
                                 aulaPrice: aulaPrice,
                                 totalAulaPrice: totalAulaPrice,
-                                totalPaketPrice: paketTotal,
+                                totalPaketPrice: totalPaket,
+                                paketList: selectedPaket,
                                 grandTotal: grandTotal,
                                 totalDays: getDayDiff(tanggalCI, tanggalCO),
                               },
@@ -672,11 +743,17 @@ const SewaAulaForm = () => {
                     )}
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         )}
       </div>
+      <PaketAulaModal
+        visible={showPaket}
+        toggle={() => setShowPaket(!showPaket)}
+        selectedItem={selectedPaket}
+        value={(data: any) => onAddNewPaket(data)}
+      />
     </>
   );
 };

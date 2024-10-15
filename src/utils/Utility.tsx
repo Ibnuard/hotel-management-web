@@ -30,3 +30,11 @@ export const parseCurrency = (formatted: string) => {
 
   return cleanNum;
 };
+
+export const handleHargaChange = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  setValue: any,
+) => {
+  const inputValue = e.target.value;
+  setValue(formatCurrency(inputValue));
+};

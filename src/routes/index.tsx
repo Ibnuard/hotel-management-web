@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import Loader from '../common/Loader';
+import AdminAddress from '../pages/Admin/AdminAddress';
 
 // Auth
 const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
@@ -71,6 +72,9 @@ const Aula = lazy(() => import('../pages/Aula/Aula'));
 const AulaForm = lazy(() => import('../pages/Aula/SewaAulaForm'));
 const AulaInvoice = lazy(() => import('../pages/Aula/AulaInvoice'));
 const AulaPriceInput = lazy(() => import('../pages/Admin/AulaPriceInput'));
+
+// Other
+const Address = lazy(() => import('../pages/Admin/AdminAddress'));
 
 const Routes = () => {
   const { token } = useAuth();
@@ -430,6 +434,15 @@ const Routes = () => {
             <Suspense fallback={<Loader />}>
               <PageTitle title={getTitle('Manajemen Aula')} />
               <AulaPriceInput />
+            </Suspense>
+          ),
+        },
+        {
+          path: '/admin/address',
+          element: (
+            <Suspense fallback={<Loader />}>
+              <PageTitle title={getTitle('Alamat')} />
+              <Address />
             </Suspense>
           ),
         },

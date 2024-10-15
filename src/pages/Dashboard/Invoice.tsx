@@ -7,7 +7,7 @@ import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency, parseCurrency } from '../../utils/Utility';
 import Logo from '../../images/logo.png';
 import useFetch from '../../hooks/useFetch';
-import { SEND_INVOICE } from '../../api/routes';
+import { ADDRESS, SEND_INVOICE } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
 import moment from 'moment';
@@ -18,6 +18,8 @@ const Invoice: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const stateParam = location.state;
+
+  const [address, setAddress] = useState<string>('');
 
   console.log(stateParam);
 
@@ -66,7 +68,28 @@ const Invoice: React.FC = () => {
     },
   ];
 
-  console.log('DATA', stateParam);
+  useEffect(() => {
+    getAddress();
+  }, []);
+
+  async function getAddress() {
+    setType(MODAL_TYPE.LOADING);
+    toggle();
+
+    const { state, data, error } = await useFetch({
+      url: ADDRESS,
+      method: 'GET',
+    });
+
+    console.log('DATA', data);
+
+    if (state == API_STATES.OK) {
+      setAddress(data.address);
+      toggle();
+    } else {
+      toggle();
+    }
+  }
 
   function GenerateInvoice(send?: boolean): void {
     if (send && !TAMU_DATA.email) {
@@ -173,8 +196,7 @@ const Invoice: React.FC = () => {
             <img className="h-30 w-55 object-center" src={Logo} alt="logo" />
             <span className="w-1/4 font-satoshi text-black-2 font-normal">
               <p className=" font-bold text-black-2 mb-2">Anggrek Inn 2</p>
-              Jl. Waitabula Kelurahan Langga lero Kecamatan kota tambolaka
-              Kabupaten Sumba Barat Daya
+              {address}
             </span>
           </div>
           <div className="flex flex-col mt-16 gap-16">

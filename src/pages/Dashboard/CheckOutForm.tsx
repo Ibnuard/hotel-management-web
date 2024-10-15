@@ -211,20 +211,20 @@ const CheckOutForm = () => {
                     <div className="flex flex-col gap-6 xl:flex-row mb-4.5">
                       <div className="w-full xl:w-1/2">
                         <DatePicker
-                          disabled
                           selector="checkout-date"
                           title="Tanggal Check Out"
                           value={tanggalCO}
                           onChange={(val: string) => setTanggalCO(val)}
+                          disabled
                         />
                       </div>
                       <div className="w-full xl:w-1/2">
                         <TimePicker
-                          disabled
                           selector="checkout-time"
                           title="Waktu Check Out"
                           value={waktuCO}
                           onChange={(val: string) => setWaktuCO(val)}
+                          disabled
                         />
                       </div>
                     </div>
@@ -347,6 +347,7 @@ const CheckOutForm = () => {
                       setOnConfirm(() => onCheckOut());
                       toggle();
                     }}
+                    disabled={!tanggalCO || !waktuCO}
                     color={'blue'}
                     fullWidth
                     className=" mt-8 normal-case"
@@ -359,6 +360,7 @@ const CheckOutForm = () => {
                         state: { ...stateParameter, order: orderDetail },
                       })
                     }
+                    disabled={!tanggalCO || !waktuCO}
                     color={'deep-orange'}
                     fullWidth
                     className=" mt-8 normal-case"

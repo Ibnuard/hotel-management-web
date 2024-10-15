@@ -46,9 +46,9 @@ const CheckInForm = () => {
     setDeposit(formatCurrency(inputValue));
   };
 
-  useEffect(() => {
-    setTanggalCI(formatDate(currentDate));
-  }, []);
+  // useEffect(() => {
+  //   setTanggalCI(formatDate(currentDate));
+  // }, []);
 
   async function onCheckIn() {
     const validateDate = isStartDateAfterEndDate(tanggalCI, tanggalCO);
@@ -160,11 +160,9 @@ const CheckInForm = () => {
                       <div className="w-full xl:w-1/2">
                         <DatePicker
                           selector="checkin-date"
-                          disabled
                           title="Tanggal Check In"
                           value={tanggalCI}
                           onChange={(val: string) => setTanggalCI(val)}
-                          defaultValue={formatDate(currentDate)}
                         />
                       </div>
                       <div className="w-full xl:w-1/2">

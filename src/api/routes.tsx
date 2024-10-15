@@ -79,3 +79,6 @@ export const AULA_STATUS = (id: any) => `aula/status/${id}`;
 
 // PRODUCT USER
 export const ADD_ORDER_SERVICE = (id: any) => `order/add-service/${id}`;
+
+// OTHER
+export const ADDRESS = 'admin/address';

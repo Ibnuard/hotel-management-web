@@ -7,7 +7,7 @@ import { formatDate } from '../../utils/DateUtils';
 import { formatCurrency, parseCurrency } from '../../utils/Utility';
 import Logo from '../../images/logo.png';
 import useFetch from '../../hooks/useFetch';
-import { SEND_INVOICE } from '../../api/routes';
+import { ADDRESS, SEND_INVOICE } from '../../api/routes';
 import { API_STATES, MODAL_TYPE } from '../../common/Constants';
 import { useModal } from '../../components/Provider/ModalProvider';
 import moment from 'moment';
@@ -19,11 +19,48 @@ const AulaInvoice: React.FC = () => {
   const navigate = useNavigate();
   const stateParam = location.state;
 
+  const [address, setAddress] = useState('');
+
   console.log('DATA', stateParam);
 
   const { setType, toggle, setOnConfirm } = useModal();
 
-  const TAMU_DATA = stateParam?.tamu || {};
+  useEffect(() => {
+    getAddress();
+  }, []);
+
+  async function getAddress() {
+    setType(MODAL_TYPE.LOADING);
+    toggle();
+
+    const { state, data, error } = await useFetch({
+      url: ADDRESS,
+      method: 'GET',
+    });
+
+    console.log('DATA', data);
+
+    if (state == API_STATES.OK) {
+      setAddress(data.address);
+      toggle();
+    } else {
+      toggle();
+    }
+  }
+
+  const mappingPaketList = stateParam.paket_list.map((item: any) => {
+    return {
+      ...item,
+      qty: stateParam.jumlah_pax,
+      nama_product: item.nama_paket,
+      harga_product: item.harga_paket,
+      total_price:
+        item.id == 1
+          ? item.harga_paket
+          : parseInt(parseCurrency(item.harga_paket)) *
+            parseInt(stateParam.jumlah_pax),
+    };
+  });
 
   const TABLE_DATA = [
     {
@@ -33,19 +70,8 @@ const AulaInvoice: React.FC = () => {
       nama_product: `Aula`,
       harga_product: stateParam.price_detail.aulaPrice,
     },
-    {
-      id: 1,
-      qty: `${stateParam.jumlah_pax} pax`,
-      total_price: stateParam.price_detail.totalPaketPrice,
-      nama_product: stateParam.paket.nama_paket,
-      harga_product:
-        stateParam.paket_id == 1
-          ? stateParam.price_detail.totalPaketPrice
-          : stateParam.paket.harga_paket,
-    },
+    ...mappingPaketList,
   ];
-
-  console.log('DATA', stateParam);
 
   function GenerateInvoice(send?: boolean): void {
     if (send && !stateParam.penyewa.email) {
@@ -152,8 +178,7 @@ const AulaInvoice: React.FC = () => {
             <img className="h-30 w-55 object-center" src={Logo} alt="logo" />
             <span className="w-1/4 font-satoshi text-black-2 font-normal">
               <p className=" font-bold text-black-2 mb-2">Anggrek Inn 2</p>
-              Jl. Waitabula Kelurahan Langga lero Kecamatan kota tambolaka
-              Kabupaten Sumba Barat Daya
+              {address}
             </span>
           </div>
           <div className="flex flex-col mt-16 gap-16">
@@ -188,10 +213,10 @@ const AulaInvoice: React.FC = () => {
                   <p className="w-40">Rent End Date</p>
                   <p>: {stateParam.tgl_akhir_sewa}</p>
                 </div>
-                <div className="flex flex-row items-center">
+                {/* <div className="flex flex-row items-center">
                   <p className="w-40">Packet Type</p>
                   <p>: {stateParam.paket.nama_paket}</p>
-                </div>
+                </div> */}
               </div>
             </div>
 

@@ -431,6 +431,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Aula
                             </NavLink>
                           </li>
+                          <li>
+                            <NavLink
+                              to="/admin/address"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Alamat
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
 
@@ -457,7 +468,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
         </nav>
         <div className="mt-auto mb-4 px-6 absolute bottom-1">
-          <p className="text-sm text-white">Versi 1.2.5</p>
+          <p className="text-sm text-white">Versi 1.2.6</p>
         </div>
       </div>
     </aside>

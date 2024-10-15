@@ -95,6 +95,8 @@ const CheckInEdit = () => {
       jumlah_deposit: deposit,
       tgl_checkout: tanggalCO,
       waktu_checkout: waktuCO,
+      tgl_checkin: tanggalCI,
+      waktu_checkin: waktuCI,
     };
     const { state, data, error } = await useFetch({
       url: UPDATE_CHECKIN(stateParameter.id),
@@ -208,21 +210,17 @@ const CheckInEdit = () => {
                       <div className="w-full xl:w-1/2">
                         <DatePicker
                           selector="checkin-date"
-                          disabled
                           title="Tanggal Check In"
                           value={tanggalCI}
                           onChange={(val: string) => setTanggalCI(val)}
-                          defaultValue={stateParameter?.tgl_checkin}
                         />
                       </div>
                       <div className="w-full xl:w-1/2">
                         <TimePicker
-                          disabled
                           selector="checkin-time"
                           title="Waktu Check In"
                           value={waktuCI}
                           onChange={(val: string) => setWaktuCI(val)}
-                          defaultValue={stateParameter?.waktu_checkin}
                         />
                       </div>
                     </div>
