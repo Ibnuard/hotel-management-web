@@ -694,31 +694,29 @@ const SewaAulaForm = () => {
                       </Button>
                     )}
 
-                    {aulaStatus == 'DONE' && (
-                      <Button
-                        onClick={() =>
-                          navigate('/aula/invoice', {
-                            state: {
-                              ...locationState,
-                              price_detail: {
-                                aulaPrice: aulaPrice,
-                                totalAulaPrice: totalAulaPrice,
-                                totalPaketPrice: totalPaket,
-                                paketList: selectedPaket,
-                                grandTotal: grandTotal,
-                                totalDays: getDayDiff(tanggalCI, tanggalCO),
-                              },
+                    <Button
+                      onClick={() =>
+                        navigate('/aula/invoice', {
+                          state: {
+                            ...locationState,
+                            price_detail: {
+                              aulaPrice: aulaPrice,
+                              totalAulaPrice: totalAulaPrice,
+                              totalPaketPrice: totalPaket,
+                              paketList: selectedPaket,
+                              grandTotal: grandTotal,
+                              totalDays: getDayDiff(tanggalCI, tanggalCO),
                             },
-                          })
-                        }
-                        disabled={isFullfilled}
-                        color={'blue'}
-                        fullWidth
-                        className=" mt-4 normal-case"
-                      >
-                        Download Invoice
-                      </Button>
-                    )}
+                          },
+                        })
+                      }
+                      disabled={isFullfilled}
+                      color={'deep-orange'}
+                      fullWidth
+                      className=" mt-4 normal-case"
+                    >
+                      Download Invoice
+                    </Button>
                   </div>
                 </div>
               </div>
