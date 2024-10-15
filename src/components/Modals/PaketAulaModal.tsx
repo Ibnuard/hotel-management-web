@@ -69,12 +69,7 @@ const PaketAulaModal = ({
   }
 
   function onAddItem(paket: any) {
-    if (paket.id == 1) {
-      setSelectedPaket(paket);
-    } else {
-      value(paket);
-      toggle();
-    }
+    setSelectedPaket(paket);
   }
 
   function onAddFromPrice(paket: any) {

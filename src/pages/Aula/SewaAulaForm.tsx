@@ -72,7 +72,6 @@ const SewaAulaForm = () => {
     !phone ||
     !ktp ||
     !alamat ||
-    !pax ||
     !selectedPaket ||
     buttonIsUpdatedReady();
 
@@ -317,30 +316,13 @@ const SewaAulaForm = () => {
   useEffect(() => {
     if (selectedPaket) {
       const ext = [...selectedPaket];
-      const filtered = ext.filter((item) => item.id !== 1);
-      const mapFormated = filtered.map((item) => {
-        return {
-          ...item,
-          harga_paket:
-            parseInt(parseCurrency(item.harga_paket)) * parseInt(pax),
-        };
-      });
 
-      const isHasPrasmanan = ext.find((item) => item.id == 1);
-
-      const extTotalPaket = mapFormated.reduce(
-        (acc, item) => acc + item.harga_paket,
+      const extTotalPaket = ext.reduce(
+        (acc, item) => acc + item.total_price,
         0,
       );
 
-      if (isHasPrasmanan) {
-        const hargaPrasmanan = parseCurrency(isHasPrasmanan.harga_paket);
-        const totalFinal = parseInt(extTotalPaket) + parseInt(hargaPrasmanan);
-
-        setTotalPaket(totalFinal);
-      } else {
-        setTotalPaket(extTotalPaket);
-      }
+      setTotalPaket(extTotalPaket);
     }
   }, [selectedPaket, pax]);
 
@@ -519,20 +501,6 @@ const SewaAulaForm = () => {
                   /> */}
 
                   <div className=" flex flex-col gap-4.5">
-                    <div className="w-full">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Jumlah Pax
-                      </label>
-                      <input
-                        type="number"
-                        disabled={aulaStatus == 'DONE'}
-                        placeholder="Masukan jumlah pax"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        onChange={(e) => setPax(e.target.value)}
-                        value={pax}
-                      />
-                    </div>
-
                     <div className="w-full rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                       <div className="flex flex-row items-center justify-between border-b border-stroke py-4 px-6.5 dark:border-strokedark">
                         <h3 className="font-medium text-black dark:text-white">
@@ -563,9 +531,19 @@ const SewaAulaForm = () => {
                                 ripple={false}
                                 className="py-1 pr-1 pl-4 text-sm"
                               >
-                                {item.nama_paket} @ {item.harga_paket}
+                                <div className=" flex flex-col gap-2">
+                                  <p>{item.nama_paket}</p>
+                                  <p>
+                                    @{item.harga_paket}{' '}
+                                    {item.id == 1 ? '/' : 'x'} {item.qty}
+                                  </p>
+                                </div>
+
                                 {aulaStatus !== 'DONE' && (
-                                  <ListItemSuffix>
+                                  <ListItemSuffix className=" flex flex-row items-center gap-4">
+                                    <p className=" font-semibold text-sm">
+                                      {formatCurrency(item.total_price)}
+                                    </p>
                                     <IconButton
                                       onClick={() => {
                                         setType(MODAL_TYPE.CONFIRMATION);

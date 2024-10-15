@@ -51,14 +51,9 @@ const AulaInvoice: React.FC = () => {
   const mappingPaketList = stateParam.paket_list.map((item: any) => {
     return {
       ...item,
-      qty: stateParam.jumlah_pax,
       nama_product: item.nama_paket,
       harga_product: item.harga_paket,
-      total_price:
-        item.id == 1
-          ? item.harga_paket
-          : parseInt(parseCurrency(item.harga_paket)) *
-            parseInt(stateParam.jumlah_pax),
+      qty: item.id == 1 ? 1 : item.qty,
     };
   });
 

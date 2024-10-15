@@ -468,7 +468,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
         </nav>
         <div className="mt-auto mb-4 px-6 absolute bottom-1">
-          <p className="text-sm text-white">Versi 1.2.6</p>
+          <p className="text-sm text-white">Versi 1.2.7</p>
         </div>
       </div>
     </aside>
