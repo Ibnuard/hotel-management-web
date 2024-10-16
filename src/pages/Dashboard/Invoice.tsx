@@ -194,48 +194,58 @@ const Invoice: React.FC = () => {
           <div className="flex flex-row gap-4 items-center justify-between">
             {/* <Typography variant={'h5'}>Anggrek Inn 2</Typography> */}
             <img className="h-30 w-55 object-center" src={Logo} alt="logo" />
-            <span className="w-1/4 font-satoshi text-black-2 font-normal">
-              <p className=" font-bold text-black-2 mb-2">Anggrek Inn 2</p>
+            <span className="w-1/4 font-roboto text-black-2 font-normal">
+              <p className=" font-roboto text-black-2 font-bold mb-2">
+                Anggrek Inn 2
+              </p>
               {address}
             </span>
           </div>
           <div className="flex flex-col mt-16 gap-16">
-            <h2 className=" text-center font-bold text-black-2 underline">
+            <h2 className=" text-center font-bold font-roboto text-black-2 underline">
               INVOICE
             </h2>
 
             <div className="flex flex-row items-baseline justify-between">
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row items-center text-black-2">
-                  <p className="w-40 text-base">Guest Name</p>
+                  <p className="w-40 text-base font-roboto text-black-2">
+                    Guest Name
+                  </p>
                   <p>
                     : {getNamaTamu(TAMU_DATA)} ( {TAMU_DATA.no_telp} )
                   </p>
                 </div>
                 <div className="flex flex-row items-center text-black-2">
-                  <p className="w-40">Date / Time</p>
-                  <p>: {moment().format('YYYY-MM-DD')}</p>
+                  <p className="w-40 font-roboto text-black-2">Date / Time</p>
+                  <p className="font-roboto text-black-2">
+                    : {moment().format('YYYY-MM-DD')}
+                  </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 text-black-2">
                 <div className="flex flex-row items-center">
-                  <p className="w-40">Invoice Number</p>
-                  <p>: {stateParam.invoice_id}</p>
+                  <p className="w-40 font-roboto text-black-2">
+                    Invoice Number
+                  </p>
+                  <p className="font-roboto text-black-2">
+                    : {stateParam.invoice_id}
+                  </p>
                 </div>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center font-roboto text-black-2">
                   <p className="w-40">Check In Date</p>
                   <p>: {stateParam.tgl_checkin}</p>
                 </div>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center font-roboto text-black-2">
                   <p className="w-40">Check Out Date</p>
                   <p>: {stateParam.tgl_checkout}</p>
                 </div>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center font-roboto text-black-2">
                   <p className="w-40">Room No.</p>
                   <p>: {stateParam.kamar.nomor_kamar}</p>
                 </div>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center font-roboto text-black-2">
                   <p className="w-40">Room Type</p>
                   <p>: {stateParam.order.tipeKamar}</p>
                 </div>
@@ -268,7 +278,7 @@ const Invoice: React.FC = () => {
                       <td className="p-4">
                         <Typography
                           variant="small"
-                          color="blue-gray"
+                          color={'black'}
                           className="font-normal"
                         >
                           {item.nama_product}
@@ -277,7 +287,7 @@ const Invoice: React.FC = () => {
                       <td className="p-4">
                         <Typography
                           variant="small"
-                          color="blue-gray"
+                          color={'black'}
                           className="font-normal"
                         >
                           {item.harga_product}
@@ -286,7 +296,7 @@ const Invoice: React.FC = () => {
                       <td className="p-4">
                         <Typography
                           variant="small"
-                          color="blue-gray"
+                          color={'black'}
                           className="font-normal"
                         >
                           {item.qty}
@@ -295,7 +305,7 @@ const Invoice: React.FC = () => {
                       <td className="p-4">
                         <Typography
                           variant="small"
-                          color="blue-gray"
+                          color={'black'}
                           className="font-normal"
                         >
                           {formatCurrency(item.total_price)}
@@ -314,7 +324,7 @@ const Invoice: React.FC = () => {
               </div>
             </div>
 
-            <div className=" text-black-2 italic text-base">
+            <div className=" font-roboto text-black-2 italic text-base">
               I agree that my liability for this bill is not waived and agree to
               be held personality liable in the event that the indicated person,
               Company, or Association to pay for any part or the full amount of
@@ -322,15 +332,15 @@ const Invoice: React.FC = () => {
             </div>
 
             <div>
-              <p className=" font-bold text-base text-black-2">
+              <p className=" font-bold text-base font-roboto text-black-2">
                 Thank you for staying with us at Anggrek Inn 2
               </p>
-              <div className=" flex flex-row mt-8 justify-between">
-                <div className=" flex flex-col items-center gap-24">
+              <div className=" flex flex-row mt-8 mx-24 justify-between">
+                <div className=" flex flex-col items-center gap-24 font-roboto text-black-2">
                   <p>Cashier Signature</p>
                   <div className="h-1 w-24 bg-body"></div>
                 </div>
-                <div className=" flex flex-col items-center gap-24">
+                <div className=" flex flex-col items-center gap-24 font-roboto text-black-2">
                   <p>Guest Signature</p>
                   <div className="h-1 w-24 bg-body"></div>
                 </div>
